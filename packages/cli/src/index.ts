@@ -2,7 +2,8 @@ import { Command } from 'commander';
 import { parseSession } from './parsers/index.js';
 import { redactSession } from './redact/index.js';
 import { uploadSession } from './upload.js';
-import { getAuth, saveAuth, clearAuth } from './auth.js';
+import { getAuth, saveAuth, clearAuth, getToken } from './auth.js';
+import { addToHistory, getHistory, findInHistory, removeFromHistory } from './history.js';
 import { nanoid } from 'nanoid';
 import chalk from 'chalk';
 import ora from 'ora';
@@ -93,8 +94,22 @@ program
       const result = await uploadSession(shared, options.server);
       spinner.succeed('Published!');
 
+      // Save to history
+      addToHistory({
+        id: result.id,
+        url: result.url,
+        manageToken: result.manageToken,
+        createdAt: new Date().toISOString(),
+        server: options.server,
+      });
+
       console.log('\n' + chalk.green.bold('Share link: ') + chalk.cyan.underline(result.url));
       console.log(chalk.dim(`ID: ${result.id}`));
+
+      // Show manage link for unauthenticated users
+      if (!getToken() && result.manageToken) {
+        console.log(chalk.dim(`Manage: ${result.url}?key=${result.manageToken}`));
+      }
     } catch (err: unknown) {
       spinner.fail((err as Error).message);
       process.exit(1);
@@ -211,6 +226,77 @@ program
     }
     console.log(chalk.green.bold(auth.username));
     console.log(chalk.dim(`Server: ${auth.server}`));
+  });
+
+program
+  .command('delete')
+  .description('Delete a published session')
+  .argument('<id>', 'Session ID to delete')
+  .option('-s, --server <url>', 'Server URL', process.env.CODECAST_SERVER || 'https://code-cast.dev')
+  .action(async (id: string, options) => {
+    const spinner = ora();
+    try {
+      const base = options.server;
+      const headers: Record<string, string> = {};
+
+      // Try CLI auth token first
+      const token = getToken();
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      // Also try manage token from history
+      const historyEntry = findInHistory(id);
+      if (historyEntry?.manageToken) {
+        headers['X-Manage-Token'] = historyEntry.manageToken;
+      }
+
+      if (!token && !historyEntry?.manageToken) {
+        console.log(chalk.red('No auth token or manage token found for this session.'));
+        console.log(chalk.dim('Log in with `codecast login` or use a session you published from this machine.'));
+        process.exit(1);
+      }
+
+      spinner.start('Deleting...');
+      const response = await fetch(`${base}/api/share/${id}`, {
+        method: 'DELETE',
+        headers,
+      });
+
+      if (!response.ok) {
+        const text = await response.text().catch(() => 'Unknown error');
+        throw new Error(`Delete failed (${response.status}): ${text}`);
+      }
+
+      removeFromHistory(id);
+      spinner.succeed(`Deleted session ${chalk.dim(id)}`);
+    } catch (err: unknown) {
+      spinner.fail((err as Error).message);
+      process.exit(1);
+    }
+  });
+
+program
+  .command('history')
+  .description('Show upload history')
+  .option('-n, --count <n>', 'Number of entries to show', '20')
+  .action((options) => {
+    const count = parseInt(options.count, 10);
+    const history = getHistory();
+    const entries = history.slice(0, isNaN(count) || count < 1 ? 20 : count);
+
+    if (entries.length === 0) {
+      console.log(chalk.yellow('No upload history. Publish a session first.'));
+      return;
+    }
+
+    console.log(chalk.bold('\nUpload history:\n'));
+    for (const entry of entries) {
+      const date = new Date(entry.createdAt).toLocaleString();
+      console.log(`  ${chalk.dim(date)}  ${chalk.white(entry.id)}`);
+      console.log(`    ${chalk.cyan.underline(entry.url)}`);
+    }
+    console.log();
   });
 
 program.parse();

@@ -9,7 +9,7 @@ const DEFAULT_SERVER = 'https://code-cast.dev';
 export async function uploadSession(
   session: SharedSession,
   serverUrl?: string,
-): Promise<{ url: string; id: string }> {
+): Promise<{ url: string; id: string; manageToken?: string }> {
   const base = serverUrl || process.env.CODECAST_SERVER || DEFAULT_SERVER;
   const endpoint = `${base}/api/share`;
 
@@ -37,9 +37,9 @@ export async function uploadSession(
     throw new Error(`Upload failed (${response.status}): ${text}`);
   }
 
-  let result: { id: string; url: string };
+  let result: { id: string; url: string; manageToken?: string };
   try {
-    result = await response.json() as { id: string; url: string };
+    result = await response.json() as { id: string; url: string; manageToken?: string };
   } catch {
     throw new Error('Server returned invalid JSON response');
   }
@@ -47,5 +47,6 @@ export async function uploadSession(
   return {
     id: result.id,
     url: result.url || `${base}/s/${result.id}`,
+    manageToken: result.manageToken,
   };
 }
