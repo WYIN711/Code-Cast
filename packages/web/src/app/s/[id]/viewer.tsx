@@ -175,7 +175,7 @@ export function SessionViewer({ session, isOwner = false, canManage = false, man
           fontSize: 12, color: 'var(--text-3)',
         }}>
           {authorUsername && (
-            <a href={`/@${authorUsername}`} style={{ color: 'var(--text-2)', textDecoration: 'none', fontWeight: 500 }}>
+            <a href={`/${authorUsername}`} style={{ color: 'var(--text-2)', textDecoration: 'none', fontWeight: 500 }}>
               @{authorUsername}
             </a>
           )}
