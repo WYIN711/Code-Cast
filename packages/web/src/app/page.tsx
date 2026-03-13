@@ -66,11 +66,12 @@ export default function Home() {
                 <span className="hp-step-title">Install</span>
               </div>
               <div className="hp-step-code">
-                <span className="hp-cmd-text"><span className="hp-prompt">$</span> npm i -g codecast</span>
-                <button className="hp-copy-btn" onClick={e => copyCmd('npm i -g codecast', e.currentTarget)} title="Copy">
+                <span className="hp-cmd-text"><span className="hp-prompt">$</span> npm i -g codecast-cli</span>
+                <button className="hp-copy-btn" onClick={e => copyCmd('npm i -g codecast-cli', e.currentTarget)} title="Copy">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
                 </button>
               </div>
+              <div className="hp-step-desc">OpenClaw users: just ask your agent to install it</div>
             </div>
             <div className="hp-step">
               <div className="hp-step-top">
@@ -195,6 +196,17 @@ export default function Home() {
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
             <span className="hp-doc-code-line"><span className="hp-prompt">$</span> npm i -g codecast-cli</span>
+          </div>
+          <p className="hp-doc-note">
+            <strong>OpenClaw users:</strong> No terminal needed. Just send this message to your OpenClaw agent and it will handle the install for you:
+          </p>
+          <div className="hp-doc-code">
+            <button className="hp-doc-copy" onClick={e => copyCmd('Install codecast-cli globally via npm, then confirm the $cast command is available.', e.currentTarget)} title="Copy">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
+            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Send this to your OpenClaw agent:</span></span>
+            <span className="hp-doc-code-line">Install codecast-cli globally via npm, then</span>
+            <span className="hp-doc-code-line">confirm the $cast command is available.</span>
           </div>
           <p className="hp-doc-desc">
             Then inside your coding session, type the command. It parses the current conversation, redacts sensitive data, and uploads — all in one step:
