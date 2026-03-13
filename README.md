@@ -1,139 +1,109 @@
 # CodeCast
 
-> **[code-cast.dev](https://code-cast.dev)**
+*Code is the outcome. Session is the story.*
 
-Share AI coding sessions as beautiful, readable web pages. Supports **Claude Code** and **Codex**.
+**[code-cast.dev](https://code-cast.dev)** — Share AI coding sessions as clean, readable web pages.
 
-## Install
+GitHub has your code. CodeCast has the conversation that built it. Publish your Claude Code or Codex sessions with one command — auto-redacted, instantly shareable.
+
+## Get Started
 
 ```bash
 npm install -g codecast-cli
 ```
 
-## Quick Start
-
-```bash
-# Share your most recent Claude Code session
-codecast share --last
-
-# Share a specific session file
-codecast share path/to/session.jsonl
-
-# Share with options
-codecast share --last --visibility public --expire 30
-
-# Preview locally (generates HTML)
-codecast preview --last
-
-# List local sessions
-codecast list
-```
-
-### Authentication (optional)
-
-Link sessions to your GitHub account for management:
-
-```bash
-codecast login
-codecast whoami
-```
-
-### Claude Code Plugin
-
-In Claude Code, use the slash command to publish the current session:
+Then inside any **Claude Code** or **Codex** session:
 
 ```
-/cast
+> /cast
+Published!
+  Share link: https://code-cast.dev/s/abc123
+  ID: abc123
 ```
 
-This generates a shareable link in one step — no need to leave the conversation.
+That's it. Anyone with the link can view the full session — no login needed.
 
-## What the Share Page Shows
+## Commands
 
-- Session title (auto-generated from first user message)
-- Agent badge (Claude Code / Codex)
-- Project name, model, duration, message count, tool call count
-- Full conversation flow:
-  - User messages (blue)
-  - Assistant responses (purple)
-  - Tool calls with expand/collapse (indigo), grouped with results
-  - Tool results with success/error indicators (green/red)
-  - Thinking blocks (hidden by default, toggle to show)
-- Search across all entries
-- Mobile-friendly layout
-
-## CLI Commands
+All commands work as `/cast` slash commands inside Claude Code and Codex:
 
 | Command | Description |
 |---------|-------------|
-| `codecast share <file>` | Upload a session and get a shareable link |
-| `codecast share --last` | Share your most recent session |
-| `codecast preview <file>` | Generate a local HTML preview |
-| `codecast list` | List local session files |
-| `codecast delete <id>` | Delete a published session |
-| `codecast history` | Show upload history |
-| `codecast login` | Authenticate with GitHub |
-| `codecast logout` | Remove stored credentials |
-| `codecast whoami` | Show current auth status |
+| `/cast` | Publish the current session |
+| `/cast login` | Log in with GitHub — unlocks your profile page |
+| `/cast logout` | Sign out |
+| `/cast delete <id>` | Delete a published session |
+| `/cast history` | Show upload history |
+| `/cast list` | List local session files |
 
 ### Options
 
 | Flag | Description | Default |
 |------|-------------|---------|
-| `--server <url>` | Server URL | `https://code-cast.dev` |
 | `--visibility <v>` | `public`, `unlisted`, or `private` | `unlisted` |
 | `--expire <days>` | Auto-expire after N days (1-365) | — |
-| `--count <n>` | Number of entries to include | all |
-| `--last` | Use most recent session file | — |
-| `--open` | Open result in browser | — |
 | `--no-redact` | Skip redaction (not recommended) | — |
+| `--dry-run` | Parse and redact but don't upload | — |
 
-## Redaction
+## GitHub Login & Profile
 
-All sessions are automatically redacted before publishing:
+Link your GitHub account to get a public profile page:
+
+```
+> /cast login
+Logged in as yourname
+```
+
+- **Profile page** at `code-cast.dev/@yourname` — avatar, bio, and all your public sessions
+- **Cross-device management** — delete or change visibility from any browser
+- **Permanent ownership** — sessions are tied to your account, not just a local token
+
+Login is optional. Without it, every upload still returns a manage token for deletion.
+
+## Automatic Redaction
+
+Before anything leaves your machine, sensitive data is stripped locally:
 
 | Category | Examples |
 |----------|----------|
-| API keys / tokens | `sk-...`, `Bearer ...`, AWS keys |
-| File paths | `/Users/username/` → `/Users/[USER]/` |
-| Email addresses | `user@example.com` → `[REDACTED_EMAIL]` |
-| Git URLs | Private repo URLs |
-| JWT tokens | `eyJ...` patterns |
-| Secret strings | Long base64/hex strings |
-| Private IPs | `192.168.x.x`, `10.x.x.x` |
+| API keys & tokens | `sk-...`, `Bearer ...`, AWS keys |
+| File paths | `/Users/you/` → `/Users/[USER]/` |
+| Emails | `user@co.com` → `[REDACTED_EMAIL]` |
+| JWT tokens | `eyJhbG...` patterns |
+| Secrets | Long base64/hex strings, private IPs, Git URLs |
 
-## Session Sources
+## Session Viewer
 
-### Claude Code
-- **Location**: `~/.claude/projects/<encoded-path>/<session-id>.jsonl`
-- **Format**: JSONL with message types: `user`, `assistant`, `file-history-snapshot`, `progress`, `queue-operation`
+Each shared session renders as a clean timeline:
 
-### Codex
-- **Location**: `~/.codex/sessions/<year>/<month>/<day>/rollout-*.jsonl`
-- **Format**: JSONL with record types: `session_meta`, `response_item`, `event_msg`, `turn_context`
+- **Messages** — user prompts and assistant responses with timestamps
+- **Tool calls** — grouped with results, click to expand full input/output
+- **Thinking blocks** — hidden by default, toggle to reveal
+- **Search** — filter entries by keyword
+- **Metadata** — agent, model, project, duration, message & tool call counts
+
+Works on desktop and mobile.
+
+## Supported Sources
+
+| Agent | Session Location |
+|-------|-----------------|
+| Claude Code | `~/.claude/projects/<path>/*.jsonl` |
+| Codex | `~/.codex/sessions/<date>/*.jsonl` |
 
 ## Development
-
-### Prerequisites
-
-- Node.js 18+
-- npm 10+
-
-### Setup
 
 ```bash
 git clone https://github.com/WYIN711/Code-Cast.git
 cd Code-Cast
-
-# Install all dependencies (monorepo workspaces)
 npm install
 
-# Run the web app
+# Web app
 cd packages/web
-cp .env.example .env.local   # configure env vars
+cp .env.example .env.local
 npm run dev
 
-# Build the CLI
+# CLI
 cd packages/cli
 npm run build
 ```
@@ -150,38 +120,23 @@ CodeCast/
 │   │       ├── history.ts    # Upload history & manage tokens
 │   │       ├── upload.ts     # Upload client
 │   │       ├── parsers/      # Session parsers
-│   │       │   ├── types.ts  # Unified transcript schema
-│   │       │   ├── claude-code.ts
-│   │       │   └── codex.ts
-│   │       ├── redact/       # Redaction module
-│   │       │   ├── index.ts
-│   │       │   └── patterns.ts
-│   │       └── render/       # HTML preview renderer
+│   │       └── redact/       # Redaction engine
 │   └── web/                  # Next.js web app
 │       └── src/
 │           ├── app/
 │           │   ├── page.tsx        # Landing page
 │           │   ├── s/[id]/         # Session viewer
 │           │   ├── [username]/     # User profile
-│           │   └── api/
-│           │       ├── share/      # Upload & delete
-│           │       ├── auth/       # GitHub OAuth + CLI tokens
-│           │       └── health/     # Health check
+│           │   └── api/            # Upload, delete, auth, health
 │           └── lib/
 │               ├── db.ts           # SQLite storage
 │               └── auth.ts         # NextAuth config
-├── deploy/                   # Production deployment
-│   ├── docker-compose.yml
-│   ├── Caddyfile
-│   ├── setup.sh
-│   └── .env.example
-└── scripts/
-    └── regenerate-previews.sh
+└── deploy/                   # Docker + Caddy production setup
 ```
 
-## Environment Variables
+### Environment Variables
 
-### Web App (`packages/web/.env.local`)
+#### Web (`packages/web/.env.local`)
 
 | Variable | Description | Required |
 |----------|-------------|----------|
@@ -191,45 +146,16 @@ CodeCast/
 | `NEXTAUTH_URL` | Public URL of the web app | Yes |
 | `DB_PATH` | SQLite database file path | No (defaults to `./data/sessions.db`) |
 
-### CLI
+#### CLI
 
 | Variable | Description | Required |
 |----------|-------------|----------|
 | `CODECAST_SERVER` | Server URL for uploads | No (defaults to `https://code-cast.dev`) |
 
-## Deployment
-
-CodeCast runs on Docker with Caddy as a reverse proxy (automatic HTTPS via Let's Encrypt).
-
-```bash
-# On the server
-cd deploy
-cp .env.example .env
-# Edit .env with production values
-
-docker compose up -d --build
-```
-
-See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for full infrastructure details (EC2, Route 53, SSL, Docker, SSH).
-
-## API
-
-### `POST /api/share`
-Upload a session. Body: JSON with `id`, `metadata`, `entries`, and optional `visibility` / `expiresAt`.
-
-### `DELETE /api/share/:id`
-Delete a session (requires auth).
-
-### `GET /api/health`
-Health check endpoint.
-
-### `GET /s/:id`
-View a shared session.
-
 ## Tech Stack
 
 - **CLI**: TypeScript, Commander.js, tsup, Nanoid, Chalk, Ora
-- **Web**: Next.js 15, React 19, Tailwind CSS, better-sqlite3
+- **Web**: Next.js 15, React 19, better-sqlite3
 - **Auth**: NextAuth v5 (GitHub OAuth)
 - **Deploy**: Docker, Caddy, AWS EC2
 - **Storage**: SQLite (WAL mode)
