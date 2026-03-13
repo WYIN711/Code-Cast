@@ -36,3 +36,6 @@ deploy/.env
 
 # Preview output (generated)
 preview/
+
+# Assets (local only)
+assets/

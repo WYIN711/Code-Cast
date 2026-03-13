@@ -1,7 +1,3 @@
-<p align="center">
-  <img src="assets/logo.svg" width="64" height="64" alt="CodeCast logo">
-</p>
-
 # CodeCast
 
 > **[code-cast.dev](https://code-cast.dev)**
@@ -144,9 +140,6 @@ npm run build
 
 ```
 CodeCast/
-├── assets/
-│   ├── logo.svg              # Logo (for light surfaces)
-│   └── logo-light.svg        # Logo (for dark surfaces)
 ├── packages/
 │   ├── cli/                  # CLI tool (codecast-cli on npm)
 │   │   └── src/
