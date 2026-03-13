@@ -181,27 +181,21 @@ export default function Home() {
         {/* Publish */}
         <div className="hp-doc">
           <div className="hp-doc-header">
-            <span className="hp-doc-icon">&gt;_</span>
+            <span className="hp-doc-icon">/</span>
             <h3>Publish a session</h3>
           </div>
           <p className="hp-doc-desc">
-            Two ways to publish. Inside <strong>Claude Code</strong> or <strong>Codex</strong>, type the slash command — it parses and uploads the current session in one step:
+            Inside your <strong>Claude Code</strong> or <strong>Codex</strong> session, type the slash command. It parses the current conversation, redacts sensitive data, and uploads — all in one step:
           </p>
           <div className="hp-doc-code">
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
-          </div>
-          <p className="hp-doc-desc">
-            From the terminal, use the CLI to publish any session file. It auto-detects the most recent session if no file is given:
-          </p>
-          <div className="hp-doc-code">
-            <span className="hp-doc-code-line"><span className="hp-prompt">$</span> codecast publish</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Published!</span>
             <span className="hp-doc-code-line hp-doc-code-dim">  Share link: https://code-cast.dev/s/abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">  ID: abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">  Manage: https://code-cast.dev/s/abc123?key=xK9m...</span>
           </div>
-          <p className="hp-doc-note">
-            Options: <code>--visibility public|unlisted</code> <code>--expire 30</code> <code>--no-redact</code> <code>--dry-run</code>
+          <p className="hp-doc-desc">
+            Sessions are <strong>unlisted</strong> by default — only people with the link can view. No account required.
           </p>
         </div>
 
@@ -212,7 +206,7 @@ export default function Home() {
             <h3>Automatic redaction</h3>
           </div>
           <p className="hp-doc-desc">
-            Before anything leaves your machine, sensitive information is automatically stripped. Redaction happens locally in the CLI — raw data never reaches the server.
+            Before anything leaves your machine, sensitive information is automatically stripped. Redaction runs locally — raw data never reaches the server.
           </p>
           <div className="hp-doc-table">
             <div className="hp-doc-tr">
@@ -236,9 +230,6 @@ export default function Home() {
               <span className="hp-doc-td-val">Long base64/hex strings, private IPs, Git URLs</span>
             </div>
           </div>
-          <p className="hp-doc-note">
-            To skip redaction (not recommended): <code>--no-redact</code>
-          </p>
         </div>
 
         {/* Viewer */}
@@ -269,14 +260,14 @@ export default function Home() {
             <h3>Manage sessions</h3>
           </div>
           <p className="hp-doc-desc">
-            Every upload returns a <strong>manage token</strong> — a one-time key that lets you delete or update the session without logging in. The CLI saves it automatically.
+            Every upload returns a <strong>manage token</strong> — a one-time key that lets you delete or update the session without an account. The token is saved locally and used automatically.
           </p>
           <div className="hp-doc-code">
-            <span className="hp-doc-code-line"><span className="hp-prompt">$</span> codecast delete abc123</span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Deleted session abc123</span>
           </div>
           <div className="hp-doc-code">
-            <span className="hp-doc-code-line"><span className="hp-prompt">$</span> codecast history</span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history</span>
             <span className="hp-doc-code-line hp-doc-code-dim">  2026-03-13 21:00  abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">    https://code-cast.dev/s/abc123</span>
           </div>
@@ -296,7 +287,7 @@ export default function Home() {
             All sessions you publish while logged in are tied to your account — you can manage them from any device, and your public sessions are listed on your profile for anyone to browse.
           </p>
           <div className="hp-doc-code">
-            <span className="hp-doc-code-line"><span className="hp-prompt">$</span> codecast login</span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Opening browser for GitHub login...</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Logged in as <span style={{ color: 'var(--green)' }}>yourname</span></span>
           </div>
@@ -310,42 +301,40 @@ export default function Home() {
           </p>
         </div>
 
-        {/* CLI reference */}
+        {/* Command reference */}
         <div className="hp-doc">
           <div className="hp-doc-header">
-            <span className="hp-doc-icon">$</span>
-            <h3>CLI reference</h3>
+            <span className="hp-doc-icon">/</span>
+            <h3>Command reference</h3>
           </div>
+          <p className="hp-doc-desc">
+            All commands work as slash commands inside <strong>Claude Code</strong> and <strong>Codex</strong>:
+          </p>
           <div className="hp-doc-table hp-doc-table-wide">
             <div className="hp-doc-tr">
-              <span className="hp-doc-td-cmd"><code>codecast publish [file]</code></span>
-              <span className="hp-doc-td-val">Upload a session. Auto-detects latest if no file given.</span>
+              <span className="hp-doc-td-cmd"><code>/cast</code></span>
+              <span className="hp-doc-td-val">Publish the current session as a shareable link.</span>
             </div>
             <div className="hp-doc-tr">
-              <span className="hp-doc-td-cmd"><code>codecast list</code></span>
-              <span className="hp-doc-td-val">List local session files (Claude Code & Codex).</span>
-            </div>
-            <div className="hp-doc-tr">
-              <span className="hp-doc-td-cmd"><code>codecast delete &lt;id&gt;</code></span>
-              <span className="hp-doc-td-val">Delete a published session by ID.</span>
-            </div>
-            <div className="hp-doc-tr">
-              <span className="hp-doc-td-cmd"><code>codecast history</code></span>
-              <span className="hp-doc-td-val">Show upload history from this machine.</span>
-            </div>
-            <div className="hp-doc-tr">
-              <span className="hp-doc-td-cmd"><code>codecast login</code></span>
+              <span className="hp-doc-td-cmd"><code>/cast login</code></span>
               <span className="hp-doc-td-val">Log in with GitHub. Unlocks profile page & cross-device management.</span>
             </div>
             <div className="hp-doc-tr">
-              <span className="hp-doc-td-cmd"><code>codecast logout</code></span>
-              <span className="hp-doc-td-val">Remove stored credentials.</span>
+              <span className="hp-doc-td-cmd"><code>/cast delete &lt;id&gt;</code></span>
+              <span className="hp-doc-td-val">Delete a published session by ID.</span>
             </div>
             <div className="hp-doc-tr">
-              <span className="hp-doc-td-cmd"><code>codecast whoami</code></span>
-              <span className="hp-doc-td-val">Show current authenticated user.</span>
+              <span className="hp-doc-td-cmd"><code>/cast history</code></span>
+              <span className="hp-doc-td-val">Show upload history from this machine.</span>
+            </div>
+            <div className="hp-doc-tr">
+              <span className="hp-doc-td-cmd"><code>/cast list</code></span>
+              <span className="hp-doc-td-val">List local session files.</span>
             </div>
           </div>
+          <p className="hp-doc-note">
+            Also available as standalone CLI: <code>npm i -g codecast-cli</code> then <code>codecast publish</code>, <code>codecast login</code>, etc.
+          </p>
         </div>
 
         {/* Supported sources */}
@@ -365,7 +354,7 @@ export default function Home() {
             </div>
           </div>
           <p className="hp-doc-note">
-            The CLI auto-discovers session files from both sources. Use <code>codecast list</code> to browse.
+            Session files are auto-discovered. Use <code>/cast list</code> to browse available sessions.
           </p>
         </div>
       </section>
