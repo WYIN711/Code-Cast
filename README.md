@@ -15,7 +15,13 @@ npm install -g codecast-cli
 Then inside any **Claude Code** or **Codex** session:
 
 ```
+# Claude Code
 > /cast
+
+# Codex
+> $cast
+```
+```
 Published!
   Share link: https://code-cast.dev/s/abc123
   ID: abc123
@@ -25,16 +31,16 @@ That's it. Anyone with the link can view the full session — no login needed.
 
 ## Commands
 
-All commands work as `/cast` slash commands inside Claude Code and Codex:
+Use `/cast` in **Claude Code** and `$cast` in **Codex**:
 
-| Command | Description |
-|---------|-------------|
-| `/cast` | Publish the current session |
-| `/cast login` | Log in with GitHub — unlocks your profile page |
-| `/cast logout` | Sign out |
-| `/cast delete <id>` | Delete a published session |
-| `/cast history` | Show upload history |
-| `/cast list` | List local session files |
+| Command | Claude Code | Codex | Description |
+|---------|------------|-------|-------------|
+| Publish | `/cast` | `$cast` | Publish the current session |
+| Login | `/cast login` | `$cast login` | Log in with GitHub — unlocks your profile page |
+| Logout | `/cast logout` | `$cast logout` | Sign out |
+| Delete | `/cast delete <id>` | `$cast delete <id>` | Delete a published session |
+| History | `/cast history` | `$cast history` | Show upload history |
+| List | `/cast list` | `$cast list` | List local session files |
 
 ### Options
 
@@ -50,7 +56,8 @@ All commands work as `/cast` slash commands inside Claude Code and Codex:
 Link your GitHub account to get a public profile page:
 
 ```
-> /cast login
+> /cast login       # Claude Code
+> $cast login       # Codex
 Logged in as yourname
 ```
 

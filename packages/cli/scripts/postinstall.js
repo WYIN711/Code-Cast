@@ -18,9 +18,9 @@ try {
   copyFileSync(src, join(dir, 'cast.md'));
 } catch {}
 
-// Codex: ~/.codex/skills/cast/SKILL.md
+// Codex / Agents: ~/.agents/skills/cast/SKILL.md
 try {
-  const dir = join(homedir(), '.codex', 'skills', 'cast');
+  const dir = join(homedir(), '.agents', 'skills', 'cast');
   mkdirSync(dir, { recursive: true });
   copyFileSync(src, join(dir, 'SKILL.md'));
 } catch {}
