@@ -7,15 +7,20 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-
-const commandsDir = join(homedir(), '.claude', 'commands');
 const src = join(__dirname, '..', 'skills', 'cast', 'SKILL.md');
-const dest = join(commandsDir, 'cast.md');
 
+if (!existsSync(src)) process.exit(0);
+
+// Claude Code: ~/.claude/commands/cast.md
 try {
-  if (!existsSync(src)) process.exit(0);
-  mkdirSync(commandsDir, { recursive: true });
-  copyFileSync(src, dest);
-} catch {
-  // Silent fail — don't break npm install
-}
+  const dir = join(homedir(), '.claude', 'commands');
+  mkdirSync(dir, { recursive: true });
+  copyFileSync(src, join(dir, 'cast.md'));
+} catch {}
+
+// Codex: ~/.codex/skills/cast/SKILL.md
+try {
+  const dir = join(homedir(), '.codex', 'skills', 'cast');
+  mkdirSync(dir, { recursive: true });
+  copyFileSync(src, join(dir, 'SKILL.md'));
+} catch {}

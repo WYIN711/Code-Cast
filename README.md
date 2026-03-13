@@ -70,6 +70,8 @@ This generates a shareable link in one step — no need to leave the conversatio
 | `codecast share --last` | Share your most recent session |
 | `codecast preview <file>` | Generate a local HTML preview |
 | `codecast list` | List local session files |
+| `codecast delete <id>` | Delete a published session |
+| `codecast history` | Show upload history |
 | `codecast login` | Authenticate with GitHub |
 | `codecast logout` | Remove stored credentials |
 | `codecast whoami` | Show current auth status |
@@ -145,6 +147,7 @@ CodeCast/
 │   │   └── src/
 │   │       ├── index.ts      # CLI entry (commander)
 │   │       ├── auth.ts       # CLI authentication
+│   │       ├── history.ts    # Upload history & manage tokens
 │   │       ├── upload.ts     # Upload client
 │   │       ├── parsers/      # Session parsers
 │   │       │   ├── types.ts  # Unified transcript schema

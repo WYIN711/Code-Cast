@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 
 interface PageProps {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ key?: string }>;
 }
 
 function getSessionRow(id: string): StoredSession | null {
@@ -47,8 +48,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function SessionPage({ params }: PageProps) {
+export default async function SessionPage({ params, searchParams }: PageProps) {
   const { id } = await params;
+  const { key } = await searchParams;
   const row = getSessionRow(id);
 
   if (!row) {
@@ -60,12 +62,15 @@ export default async function SessionPage({ params }: PageProps) {
     notFound();
   }
 
-  // Check visibility
+  // Check visibility & ownership
   const authSession = await auth();
   const currentUserId = (authSession as any)?.userId as string | undefined;
   const isOwner = !!currentUserId && currentUserId === session.userId;
 
-  if (session.visibility === 'private' && !isOwner) {
+  // Check manage token from ?key= query param
+  const canManage = !!(key && row.manage_token && key === row.manage_token);
+
+  if (session.visibility === 'private' && !isOwner && !canManage) {
     notFound();
   }
 
@@ -74,5 +79,12 @@ export default async function SessionPage({ params }: PageProps) {
   db.prepare('UPDATE sessions SET view_count = view_count + 1 WHERE id = ?').run(id);
   session.viewCount = (session.viewCount || 0) + 1;
 
-  return <SessionViewer session={session} isOwner={isOwner} />;
+  return (
+    <SessionViewer
+      session={session}
+      isOwner={isOwner}
+      canManage={canManage}
+      manageToken={canManage ? key : undefined}
+    />
+  );
 }

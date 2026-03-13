@@ -51,6 +51,7 @@ export function getDb(): Database.Database {
       'ALTER TABLE sessions ADD COLUMN user_id TEXT',
       'ALTER TABLE sessions ADD COLUMN pinned INTEGER DEFAULT 0',
       'ALTER TABLE sessions ADD COLUMN title TEXT',
+      'ALTER TABLE sessions ADD COLUMN manage_token TEXT',
     ];
     for (const sql of migrations) {
       try { db.exec(sql); } catch { /* column already exists */ }
@@ -70,4 +71,5 @@ export interface StoredSession {
   user_id: string | null;
   pinned: number;
   title: string | null;
+  manage_token: string | null;
 }

@@ -88,6 +88,7 @@ docker volume inspect deploy_codecast_data
 | `packages/cli/src/redact/` | 敏感数据脱敏引擎 |
 | `packages/cli/src/upload.ts` | 上传到服务器 |
 | `packages/cli/src/auth.ts` | CLI 认证 (token 存 `~/.codecast/auth.json`) |
+| `packages/cli/src/history.ts` | 上传历史 + manage token (存 `~/.codecast/history.json`) |
 | `packages/web/src/lib/db.ts` | SQLite 数据库初始化 + schema |
 | `packages/web/src/lib/auth.ts` | NextAuth 配置 + token 验证 |
 | `packages/web/src/app/s/[id]/` | 会话查看页面 |

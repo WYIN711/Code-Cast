@@ -1,26 +1,62 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getDb } from '@/lib/db';
-import { getUserIdFromToken } from '@/lib/auth';
+import { getDb, type StoredSession } from '@/lib/db';
+import { getUserIdFromToken, auth } from '@/lib/auth';
 
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-function getSessionOwner(id: string): string | null {
+function getSession(id: string): StoredSession | undefined {
   const db = getDb();
-  const row = db.prepare('SELECT user_id FROM sessions WHERE id = ?').get(id) as { user_id: string | null } | undefined;
-  return row?.user_id ?? null;
+  return db.prepare('SELECT * FROM sessions WHERE id = ?').get(id) as StoredSession | undefined;
+}
+
+/**
+ * Check if the request is authorized to manage the given session.
+ * Supports three auth methods (checked in order):
+ *   1. Bearer token (CLI auth) → matches user_id
+ *   2. X-Manage-Token header or ?token= query param → matches manage_token
+ *   3. NextAuth session cookie → matches user_id
+ */
+async function isAuthorized(
+  request: NextRequest,
+  session: StoredSession,
+): Promise<boolean> {
+  // 1. Bearer token (CLI auth)
+  const userId = getUserIdFromToken(request.headers.get('authorization'));
+  if (userId && session.user_id && userId === session.user_id) {
+    return true;
+  }
+
+  // 2. Manage token (header or query param)
+  const manageToken =
+    request.headers.get('x-manage-token') ||
+    request.nextUrl.searchParams.get('token');
+  if (manageToken && session.manage_token && manageToken === session.manage_token) {
+    return true;
+  }
+
+  // 3. NextAuth session cookie (browser users)
+  const authSession = await auth();
+  const sessionUserId = (authSession as any)?.userId as string | undefined;
+  if (sessionUserId && session.user_id && sessionUserId === session.user_id) {
+    return true;
+  }
+
+  return false;
 }
 
 /** GET a session by ID (returns JSON) */
-export async function GET(_request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const db = getDb();
-  const row = db.prepare('SELECT * FROM sessions WHERE id = ?').get(id) as Record<string, unknown> | undefined;
+  const row = getSession(id);
 
   if (!row) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
+
+  // Check if caller can manage this session
+  const canManage = await isAuthorized(request, row);
 
   return NextResponse.json({
     id: row.id,
@@ -31,21 +67,21 @@ export async function GET(_request: NextRequest, { params }: RouteParams) {
     userId: row.user_id,
     pinned: row.pinned,
     title: row.title,
+    canManage,
   });
 }
 
 /** PATCH a session — update visibility, title, pinned */
 export async function PATCH(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const userId = getUserIdFromToken(request.headers.get('authorization'));
+  const row = getSession(id);
 
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!row) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const owner = getSessionOwner(id);
-  if (owner !== userId) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!(await isAuthorized(request, row))) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const body = await request.json();
@@ -84,15 +120,14 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 /** DELETE a session (requires ownership) */
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   const { id } = await params;
-  const userId = getUserIdFromToken(request.headers.get('authorization'));
+  const row = getSession(id);
 
-  if (!userId) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  if (!row) {
+    return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
 
-  const owner = getSessionOwner(id);
-  if (owner !== userId) {
-    return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
+  if (!(await isAuthorized(request, row))) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
   const db = getDb();

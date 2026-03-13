@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getDb } from '@/lib/db';
 import { getUserIdFromToken } from '@/lib/auth';
+import { nanoid } from 'nanoid';
 
 const MAX_PAYLOAD_SIZE = 10 * 1024 * 1024; // 10MB
 const ID_PATTERN = /^[a-zA-Z0-9_-]{1,32}$/;
@@ -43,11 +44,14 @@ export async function POST(request: NextRequest) {
     // Optional auth: link session to user if token provided
     const userId = getUserIdFromToken(request.headers.get('authorization'));
 
+    // Generate a manage token for anonymous session management
+    const manageToken = nanoid(32);
+
     const db = getDb();
 
     db.prepare(`
-      INSERT OR REPLACE INTO sessions (id, metadata, entries, visibility, created_at, expires_at, user_id)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
+      INSERT OR REPLACE INTO sessions (id, metadata, entries, visibility, created_at, expires_at, user_id, manage_token)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?)
     `).run(
       id,
       JSON.stringify(metadata),
@@ -56,6 +60,7 @@ export async function POST(request: NextRequest) {
       createdAt || new Date().toISOString(),
       expiresAt || null,
       userId,
+      manageToken,
     );
 
     const baseUrl = request.headers.get('x-forwarded-host')
@@ -65,6 +70,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       id,
       url: `${baseUrl}/s/${id}`,
+      manageToken,
     });
   } catch (err: unknown) {
     console.error('Upload error:', err);
