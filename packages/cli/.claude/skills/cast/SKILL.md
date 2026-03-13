@@ -1,12 +1,19 @@
 ---
 name: cast
-description: Publish this session as a shareable CodeCast link
+description: Publish, manage, and share CodeCast sessions
 user_invocable: true
+argument-hint: "[login | logout | delete <id> | history | list]"
 ---
 
-Publish the current Claude Code session to CodeCast.
+Run the matching `codecast` command immediately. Do not explain what you are about to do — just execute it and show the output.
 
-Steps:
-1. Run: `npx codecast publish --server https://code-cast.dev`
-2. Show the returned URL to the user
-3. If the command fails because codecast is not installed, suggest: `npm install -g codecast-cli`
+- No args → `codecast publish`
+- `login` → `codecast login`
+- `logout` → `codecast logout`
+- `delete <id>` → `codecast delete <id>`
+- `history` → `codecast history`
+- `list` → `codecast list`
+
+Pass any extra flags through (e.g. `--visibility public`, `--expire 30`, `--no-redact`, `--dry-run`).
+
+If `codecast` is not found, run `npm install -g codecast-cli` first, then retry.
