@@ -1,6 +1,6 @@
 {
   "name": "codecast-cli",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Share AI coding sessions as beautiful web pages. Supports Claude Code and Codex.",
   "type": "module",
   "bin": {
@@ -8,6 +8,7 @@
   },
   "files": [
     "dist/",
+    "scripts/",
     "skills/",
     ".agents/",
     ".claude-plugin/",
@@ -17,6 +18,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsx src/index.ts",
+    "postinstall": "node scripts/postinstall.js",
     "prepublishOnly": "npm run build"
   },
   "keywords": [
