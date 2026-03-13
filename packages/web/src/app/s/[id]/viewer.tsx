@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useMemo, useCallback } from 'react';
+import { useState, useMemo, useCallback, useEffect } from 'react';
+
+type Theme = 'light' | 'dark' | 'system';
+const THEME_KEY = 'theme';
 
 interface Entry {
   type: 'user' | 'assistant' | 'tool_call' | 'tool_result' | 'thinking' | 'system';
@@ -31,9 +34,43 @@ interface SessionData {
   viewCount: number;
 }
 
-export function SessionViewer({ session, isOwner = false }: { session: SessionData; isOwner?: boolean }) {
+export function SessionViewer({ session, isOwner = false, canManage = false, manageToken }: { session: SessionData; isOwner?: boolean; canManage?: boolean; manageToken?: string }) {
   const [search, setSearch] = useState('');
   const [showThinking, setShowThinking] = useState(false);
+  const [theme, setTheme] = useState<Theme>('system');
+  const [resolvedDark, setResolvedDark] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem(THEME_KEY) as Theme | null;
+    if (saved === 'light' || saved === 'dark' || saved === 'system') {
+      setTheme(saved);
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(THEME_KEY, theme);
+
+    const apply = (dark: boolean) => {
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+      setResolvedDark(dark);
+    };
+
+    if (theme === 'light') { apply(false); return; }
+    if (theme === 'dark') { apply(true); return; }
+
+    // system
+    const mq = window.matchMedia('(prefers-color-scheme: dark)');
+    apply(mq.matches);
+    const handler = (e: MediaQueryListEvent) => apply(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, [theme]);
+
+  const cycleTheme = () => {
+    setTheme(prev => prev === 'light' ? 'dark' : prev === 'dark' ? 'system' : 'light');
+  };
+
+  const themeLabel = theme === 'light' ? 'Light' : theme === 'dark' ? 'Dark' : 'System';
 
   const groups = useMemo(() => groupEntries(session.entries), [session.entries]);
 
@@ -72,10 +109,18 @@ export function SessionViewer({ session, isOwner = false }: { session: SessionDa
           display: 'flex', alignItems: 'center', gap: 8,
           textDecoration: 'none', fontSize: 14, fontWeight: 600, color: 'var(--text)',
         }}>
-          <img src="/logo.svg" alt="CodeCast" width={24} height={24} style={{ borderRadius: 6 }} />
+          <img src={resolvedDark ? '/logo-light.svg' : '/logo.svg'} alt="CodeCast" width={24} height={24} style={{ borderRadius: 6 }} />
           CodeCast
         </a>
         <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+          <button
+            onClick={cycleTheme}
+            style={{
+              padding: '5px 14px', borderRadius: 6, fontSize: 12, fontWeight: 500,
+              background: 'var(--bg)', border: '1px solid var(--border)',
+              color: 'var(--text-2)', cursor: 'pointer', fontFamily: 'var(--font-sans)',
+            }}
+          >{themeLabel}</button>
           <button
             onClick={() => {
               const data = JSON.stringify({ metadata: session.metadata, entries: session.entries }, null, 2);
@@ -102,7 +147,7 @@ export function SessionViewer({ session, isOwner = false }: { session: SessionDa
       </nav>
 
       {/* Owner Controls */}
-      {isOwner && <OwnerControls sessionId={session.id} visibility={session.visibility} />}
+      {(isOwner || canManage) && <OwnerControls sessionId={session.id} visibility={session.visibility} manageToken={manageToken} />}
 
       {/* Header */}
       <div style={{ padding: '32px 0 24px', borderBottom: '1px solid var(--border-light)' }}>
@@ -237,7 +282,8 @@ function StatItem({ n, label }: { n: number | string; label: string }) {
 
 function EntryCard({ entry }: { entry: Entry }) {
   const config = AVATAR_CONFIG[entry.type] || AVATAR_CONFIG.system;
-  const [expanded, setExpanded] = useState(entry.content.length < 600);
+  const needsTruncation = entry.content.length >= 600;
+  const [expanded, setExpanded] = useState(!needsTruncation);
 
   return (
     <div style={{ padding: '20px 0', borderBottom: '1px solid var(--border-light)' }}>
@@ -257,7 +303,7 @@ function EntryCard({ entry }: { entry: Entry }) {
       </div>
       <div style={{
         fontSize: 14, lineHeight: 1.75, color: 'var(--text)',
-        whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere',
         maxHeight: expanded ? 'none' : 200, overflow: 'hidden', position: 'relative',
       }}>
         {entry.content}
@@ -268,22 +314,23 @@ function EntryCard({ entry }: { entry: Entry }) {
           }} />
         )}
       </div>
-      {!expanded && (
+      {needsTruncation && (
         <button
-          onClick={() => setExpanded(true)}
+          onClick={() => setExpanded(!expanded)}
           style={{
             marginTop: 6, background: 'none', border: 'none', color: 'var(--text-2)',
             cursor: 'pointer', fontSize: 12, fontFamily: 'var(--font-sans)',
             textDecoration: 'underline', textUnderlineOffset: 2,
           }}
-        >Show more</button>
+        >{expanded ? 'Show less' : 'Show more'}</button>
       )}
     </div>
   );
 }
 
 function ThinkingEntry({ entry }: { entry: Entry }) {
-  const [expanded, setExpanded] = useState(entry.content.length < 400);
+  const needsTruncation = entry.content.length >= 400;
+  const [expanded, setExpanded] = useState(!needsTruncation);
 
   return (
     <div style={{ padding: '20px 0', borderBottom: '1px solid var(--border-light)' }}>
@@ -299,7 +346,7 @@ function ThinkingEntry({ entry }: { entry: Entry }) {
       </div>
       <div style={{
         fontSize: 13, lineHeight: 1.75, color: 'var(--text-3)', fontStyle: 'italic',
-        whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+        whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere',
         maxHeight: expanded ? 'none' : 200, overflow: 'hidden', position: 'relative',
       }}>
         {entry.content}
@@ -310,14 +357,14 @@ function ThinkingEntry({ entry }: { entry: Entry }) {
           }} />
         )}
       </div>
-      {!expanded && (
+      {needsTruncation && (
         <button
-          onClick={() => setExpanded(true)}
+          onClick={() => setExpanded(!expanded)}
           style={{
             marginTop: 6, background: 'none', border: 'none', color: 'var(--text-2)',
             cursor: 'pointer', fontSize: 12, textDecoration: 'underline', textUnderlineOffset: 2,
           }}
-        >Show more</button>
+        >{expanded ? 'Show less' : 'Show more'}</button>
       )}
     </div>
   );
@@ -343,39 +390,43 @@ function ToolGroup({ entries }: { entries: Entry[] }) {
       background: 'var(--bg-2)', margin: '0 -24px', padding: '16px 24px',
       borderBottom: '1px solid var(--border-light)',
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: expanded ? 10 : 0 }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <span style={{
-            width: 20, height: 20, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: 9, fontWeight: 700, color: 'white', background: 'var(--text-3)',
-          }}>{firstLetter}</span>
-          <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 500, color: 'var(--text)' }}>
-            {toolName}
-          </span>
-          <span style={{
-            fontSize: 10, fontWeight: 600, padding: '1px 6px', borderRadius: 10,
-            color: isError ? 'var(--red)' : 'var(--green)',
-            background: isError ? 'var(--red-bg)' : 'var(--green-bg)',
-          }}>
-            {isError ? 'error' : 'success'}
-          </span>
-        </div>
-        {toolCall.timestamp && (
-          <span style={{ fontSize: 11, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
-            {formatTime(toolCall.timestamp)}
-          </span>
-        )}
-      </div>
-
-      {/* Collapsed preview or expanded content */}
       <div
         onClick={() => setExpanded(!expanded)}
         style={{ cursor: 'pointer' }}
       >
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: expanded ? 10 : 0 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            <span style={{
+              width: 20, height: 20, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: 9, fontWeight: 700, color: 'white', background: 'var(--text-3)',
+            }}>{firstLetter}</span>
+            <span style={{ fontFamily: 'var(--font-mono)', fontSize: 12.5, fontWeight: 500, color: 'var(--text)' }}>
+              {toolName}
+            </span>
+            <span style={{
+              fontSize: 10, fontWeight: 600, padding: '1px 6px', borderRadius: 10,
+              color: isError ? 'var(--red)' : 'var(--green)',
+              background: isError ? 'var(--red-bg)' : 'var(--green-bg)',
+            }}>
+              {isError ? 'error' : 'success'}
+            </span>
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {toolCall.timestamp && (
+              <span style={{ fontSize: 11, color: 'var(--text-3)', fontFamily: 'var(--font-mono)' }}>
+                {formatTime(toolCall.timestamp)}
+              </span>
+            )}
+            <span style={{ fontSize: 10, color: 'var(--text-3)' }}>{expanded ? '\u25B2' : '\u25BC'}</span>
+          </div>
+        </div>
+
+        {/* File path or collapsed preview */}
         {isFileOp && (
           <span style={{
             fontFamily: 'var(--font-mono)', fontSize: 12, color: 'var(--text-2)',
             textDecoration: 'underline', textUnderlineOffset: 2, display: 'inline-block', marginBottom: 4,
+            wordBreak: 'break-all', overflowWrap: 'anywhere',
           }}>
             {firstLine.substring(0, 120)}
           </span>
@@ -385,7 +436,8 @@ function ToolGroup({ entries }: { entries: Entry[] }) {
             background: 'var(--bg-2)', border: '1px solid var(--border-light)', borderRadius: 8,
             padding: '10px 14px', marginTop: 6, overflow: 'hidden',
             fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.5, color: 'var(--text-2)',
-            maxHeight: 60, textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            maxHeight: 60, textOverflow: 'ellipsis', whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+            overflowWrap: 'anywhere',
           }}>
             {firstLine.substring(0, 120)}
           </pre>
@@ -398,7 +450,7 @@ function ToolGroup({ entries }: { entries: Entry[] }) {
         }}>
           <div style={{
             padding: '12px 14px', fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.5,
-            whiteSpace: 'pre-wrap', wordBreak: 'break-word', color: 'var(--text)',
+            whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere', color: 'var(--text)',
             maxHeight: 300, overflow: 'auto', background: 'var(--bg)',
           }}>
             {toolCall.content}
@@ -407,10 +459,10 @@ function ToolGroup({ entries }: { entries: Entry[] }) {
             <div style={{
               padding: '12px 14px', borderTop: '1px solid var(--border-light)',
               fontFamily: 'var(--font-mono)', fontSize: 11.5, lineHeight: 1.5,
-              whiteSpace: 'pre-wrap', wordBreak: 'break-word',
+              whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere',
               maxHeight: 300, overflow: 'auto',
               background: isError ? 'var(--red-bg)' : 'var(--green-bg)',
-              color: isError ? '#8b2020' : '#2d5a2d',
+              color: isError ? 'var(--red)' : 'var(--green)',
             }}>
               {toolResult.content}
             </div>
@@ -421,22 +473,30 @@ function ToolGroup({ entries }: { entries: Entry[] }) {
   );
 }
 
-function OwnerControls({ sessionId, visibility }: { sessionId: string; visibility: string }) {
+function OwnerControls({ sessionId, visibility, manageToken }: { sessionId: string; visibility: string; manageToken?: string }) {
   const [vis, setVis] = useState(visibility);
   const [saving, setSaving] = useState(false);
+
+  const authHeaders = useMemo(() => {
+    const headers: Record<string, string> = {};
+    if (manageToken) {
+      headers['X-Manage-Token'] = manageToken;
+    }
+    return headers;
+  }, [manageToken]);
 
   const updateSession = useCallback(async (updates: Record<string, unknown>) => {
     setSaving(true);
     try {
       await fetch(`/api/share/${sessionId}`, {
         method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...authHeaders },
         body: JSON.stringify(updates),
       });
     } finally {
       setSaving(false);
     }
-  }, [sessionId]);
+  }, [sessionId, authHeaders]);
 
   const handleVisChange = async (newVis: string) => {
     setVis(newVis);
@@ -445,7 +505,7 @@ function OwnerControls({ sessionId, visibility }: { sessionId: string; visibilit
 
   const handleDelete = async () => {
     if (!confirm('Delete this session permanently?')) return;
-    await fetch(`/api/share/${sessionId}`, { method: 'DELETE' });
+    await fetch(`/api/share/${sessionId}`, { method: 'DELETE', headers: authHeaders });
     window.location.href = '/';
   };
 
