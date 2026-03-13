@@ -188,12 +188,18 @@ export default function Home() {
             <h3>Publish a session</h3>
           </div>
           <p className="hp-doc-desc">
-            Inside your coding session, type the command. It parses the current conversation, redacts sensitive data, and uploads — all in one step:
+            Install once — the <code>/cast</code> and <code>$cast</code> commands are automatically registered to Claude Code, Codex, and OpenClaw:
           </p>
           <div className="hp-doc-code">
             <button className="hp-doc-copy" onClick={e => copyCmd('npm i -g codecast-cli', e.currentTarget)} title="Copy install command">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
+            <span className="hp-doc-code-line"><span className="hp-prompt">$</span> npm i -g codecast-cli</span>
+          </div>
+          <p className="hp-doc-desc">
+            Then inside your coding session, type the command. It parses the current conversation, redacts sensitive data, and uploads — all in one step:
+          </p>
+          <div className="hp-doc-code">
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
             <span className="hp-doc-code-line"> </span>
