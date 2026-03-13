@@ -31,7 +31,7 @@ export default function Home() {
       {/* Hero + Steps */}
       <section className="hp-hero">
         <div className="hp-hero-left">
-          <p className="hp-slogan">Code is the outcome. Session is the story.</p>
+          <p className="hp-slogan"><em>Code</em> is the outcome. <em>Session</em> is the story.</p>
           <h1>Share your AI<br/>coding sessions</h1>
           <p className="hp-sub">One command to turn terminal transcripts into clean, shareable pages.</p>
           <div className="hp-usecases">
@@ -193,10 +193,10 @@ export default function Home() {
             <span className="hp-doc-code-line hp-doc-code-dim">Published!</span>
             <span className="hp-doc-code-line hp-doc-code-dim">  Share link: https://code-cast.dev/s/abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">  ID: abc123</span>
-            <span className="hp-doc-code-line hp-doc-code-dim">  Manage: https://code-cast.dev/s/abc123?key=xK9m...</span>
+            <span className="hp-doc-code-line hp-doc-code-dim">  Profile: https://code-cast.dev/@yourname</span>
           </div>
           <p className="hp-doc-desc">
-            Sessions are <strong>unlisted</strong> by default — only people with the link can view. No account required.
+            Sessions are <strong>unlisted</strong> by default — only people with the link can view. Use <code>--visibility public</code> to list on your profile page. No account required for basic sharing.
           </p>
         </div>
 
@@ -293,12 +293,13 @@ export default function Home() {
             <span className="hp-doc-code-line hp-doc-code-dim">Logged in as <span style={{ color: 'var(--green)' }}>yourname</span></span>
           </div>
           <ul className="hp-doc-list">
-            <li><strong>Profile page</strong> — your avatar, display name, and all public sessions at <code>code-cast.dev/@yourname</code></li>
+            <li><strong>Profile page</strong> — your avatar, display name, GitHub link, and all public sessions at <code>code-cast.dev/@yourname</code></li>
+            <li><strong>Unlisted sessions</strong> — only you can see your unlisted sessions on your profile (marked with a dashed badge). Other visitors only see public ones</li>
             <li><strong>Cross-device management</strong> — delete or change visibility from any browser where you&apos;re signed in</li>
             <li><strong>Ownership</strong> — sessions are permanently linked to your account, not just a local token</li>
           </ul>
           <p className="hp-doc-note">
-            Login is optional. Without it, you can still publish and manage sessions via the manage token.
+            Login is optional. Without it, you can still publish and manage sessions via the manage token. Use <code>/cast logout</code> to sign out.
           </p>
         </div>
 
@@ -319,6 +320,10 @@ export default function Home() {
             <div className="hp-doc-tr">
               <span className="hp-doc-td-cmd"><code>/cast login</code></span>
               <span className="hp-doc-td-val">Log in with GitHub. Unlocks profile page & cross-device management.</span>
+            </div>
+            <div className="hp-doc-tr">
+              <span className="hp-doc-td-cmd"><code>/cast logout</code></span>
+              <span className="hp-doc-td-val">Sign out and remove stored credentials.</span>
             </div>
             <div className="hp-doc-tr">
               <span className="hp-doc-td-cmd"><code>/cast delete &lt;id&gt;</code></span>

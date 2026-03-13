@@ -179,7 +179,6 @@ export default async function ProfilePage({ params }: PageProps) {
                     {meta.model && <span>{meta.model}</span>}
                     <span>{date}</span>
                     <span>{meta.entryCount} entries</span>
-                    <span>{s.view_count} views</span>
                   </div>
                 </a>
               );
