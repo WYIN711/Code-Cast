@@ -18,7 +18,7 @@ export interface SessionEntry {
 }
 
 export interface SessionMetadata {
-  agent: 'claude-code' | 'codex' | 'unknown';
+  agent: 'claude-code' | 'codex' | 'openclaw' | 'unknown';
   sessionId: string;
   title: string;
   project?: string;

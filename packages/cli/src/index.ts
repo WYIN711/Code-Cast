@@ -125,7 +125,7 @@ program
   .command('list')
   .description('List recent local sessions')
   .option('-n, --count <n>', 'Number of sessions to show', '10')
-  .option('--source <type>', 'Filter by source: claude-code, codex, all', 'all')
+  .option('--source <type>', 'Filter by source: claude-code, codex, openclaw, all', 'all')
   .action((options) => {
     const count = parseInt(options.count, 10);
     const sessions = listSessions(options.source, isNaN(count) || count < 1 ? 10 : count);
@@ -140,6 +140,8 @@ program
       const size = (s.size / 1024).toFixed(0) + ' KB';
       const label = s.source === 'claude-code'
         ? chalk.blue('[Claude Code]')
+        : s.source === 'openclaw'
+        ? chalk.magenta('[OpenClaw]')
         : chalk.green('[Codex]');
       console.log(`  ${label} ${chalk.dim(date)} ${chalk.white(s.name)} ${chalk.dim(size)}`);
       console.log(`    ${chalk.dim(s.path)}`);
@@ -311,7 +313,7 @@ program.parse();
 interface SessionInfo {
   name: string;
   path: string;
-  source: 'claude-code' | 'codex';
+  source: 'claude-code' | 'codex' | 'openclaw';
   mtime: number;
   size: number;
 }
@@ -378,6 +380,37 @@ function listSessions(source: string, limit: number): SessionInfo[] {
           // skip
         }
       });
+    }
+  }
+
+  // OpenClaw sessions
+  if (source === 'all' || source === 'openclaw') {
+    const openclawDir = join(homedir(), '.openclaw', 'agents');
+    if (existsSync(openclawDir)) {
+      for (const agentDir of readdirSync(openclawDir)) {
+        const sessionsDir = join(openclawDir, agentDir, 'sessions');
+        try {
+          if (!existsSync(sessionsDir) || !statSync(sessionsDir).isDirectory()) continue;
+        } catch {
+          continue;
+        }
+        for (const file of readdirSync(sessionsDir)) {
+          if (!file.endsWith('.jsonl')) continue;
+          const fullPath = join(sessionsDir, file);
+          try {
+            const stat = statSync(fullPath);
+            results.push({
+              name: file,
+              path: fullPath,
+              source: 'openclaw',
+              mtime: stat.mtimeMs,
+              size: stat.size,
+            });
+          } catch {
+            continue;
+          }
+        }
+      }
     }
   }
 

@@ -144,7 +144,7 @@ export default async function ProfilePage({ params }: PageProps) {
             {sessions.map(s => {
               const meta = JSON.parse(s.metadata);
               const displayTitle = s.title || meta.title || 'Untitled Session';
-              const agentLabel = meta.agent === 'claude-code' ? 'Claude Code' : meta.agent === 'codex' ? 'Codex' : meta.agent;
+              const agentLabel = meta.agent === 'claude-code' ? 'Claude Code' : meta.agent === 'codex' ? 'Codex' : meta.agent === 'openclaw' ? 'OpenClaw' : meta.agent;
               const date = new Date(s.created_at).toLocaleDateString();
 
               return (

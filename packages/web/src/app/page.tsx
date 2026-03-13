@@ -50,6 +50,10 @@ export default function Home() {
               <img src="/openai-icon.svg" width={18} height={18} alt="OpenAI" />
               Codex
             </span>
+            <span className="hp-plat-btn">
+              <img src="/openclaw-icon.svg" width={18} height={18} alt="OpenClaw" style={{ borderRadius: 4 }} />
+              OpenClaw
+            </span>
           </div>
         </div>
 
@@ -76,7 +80,7 @@ export default function Home() {
               <div className="hp-step-code">
                 <span className="hp-cmd-text">/cast <span className="hp-prompt">or</span> $cast</span>
               </div>
-              <div className="hp-step-desc"><strong>/cast</strong> in Claude Code · <strong>$cast</strong> in Codex</div>
+              <div className="hp-step-desc"><strong>/cast</strong> in Claude Code · <strong>$cast</strong> in Codex / OpenClaw</div>
             </div>
             <div className="hp-step">
               <div className="hp-step-top">
@@ -193,7 +197,7 @@ export default function Home() {
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
             <span className="hp-doc-code-line"> </span>
-            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Codex</span></span>
+            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Codex / OpenClaw</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> $cast</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Published!</span>
             <span className="hp-doc-code-line hp-doc-code-dim">  Share link: https://code-cast.dev/s/abc123</span>
@@ -272,14 +276,14 @@ export default function Home() {
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast delete abc123', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123  <span className="hp-doc-code-dim">or $cast delete abc123</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123  <span className="hp-doc-code-dim">or $cast delete abc123 (Codex / OpenClaw)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Deleted session abc123</span>
           </div>
           <div className="hp-doc-code">
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast history', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history  <span className="hp-doc-code-dim">or $cast history</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history  <span className="hp-doc-code-dim">or $cast history (Codex / OpenClaw)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">  2026-03-13 21:00  abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">    https://code-cast.dev/s/abc123</span>
           </div>
@@ -302,7 +306,7 @@ export default function Home() {
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast login', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login  <span className="hp-doc-code-dim">or $cast login</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login  <span className="hp-doc-code-dim">or $cast login (Codex / OpenClaw)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Opening browser for GitHub login...</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Logged in as <span style={{ color: 'var(--green)' }}>yourname</span></span>
           </div>
@@ -313,7 +317,7 @@ export default function Home() {
             <li><strong>Ownership</strong> — sessions are permanently linked to your account, not just a local token</li>
           </ul>
           <p className="hp-doc-note">
-            Login is optional. Without it, you can still publish and manage sessions via the manage token. Use <code>/cast logout</code> or <code>$cast logout</code> to sign out.
+            Login is optional. Without it, you can still publish and manage sessions via the manage token. Use <code>/cast logout</code> or <code>$cast logout</code> (Codex / OpenClaw) to sign out.
           </p>
         </div>
 
@@ -324,7 +328,7 @@ export default function Home() {
             <h3>Command reference</h3>
           </div>
           <p className="hp-doc-desc">
-            Use <code>/cast</code> in <strong>Claude Code</strong> and <code>$cast</code> in <strong>Codex</strong>:
+            Use <code>/cast</code> in <strong>Claude Code</strong> and <code>$cast</code> in <strong>Codex</strong> / <strong>OpenClaw</strong>:
           </p>
           <div className="hp-doc-table hp-doc-table-wide">
             <div className="hp-doc-tr">
@@ -336,6 +340,11 @@ export default function Home() {
               <span className="hp-doc-td-label">Codex</span>
               <span className="hp-doc-td-cmd"><code>$cast</code></span>
               <span className="hp-doc-td-val">Same command, Codex skill syntax.</span>
+            </div>
+            <div className="hp-doc-tr">
+              <span className="hp-doc-td-label">OpenClaw</span>
+              <span className="hp-doc-td-cmd"><code>$cast</code></span>
+              <span className="hp-doc-td-val">Same command, OpenClaw skill syntax.</span>
             </div>
           </div>
           <div className="hp-doc-table hp-doc-table-wide" style={{ marginTop: 8 }}>
@@ -361,7 +370,7 @@ export default function Home() {
             </div>
           </div>
           <p className="hp-doc-note">
-            Example: <code>/cast login</code> in Claude Code, <code>$cast login</code> in Codex. Also available as standalone CLI: <code>codecast publish</code>, <code>codecast login</code>, etc.
+            Example: <code>/cast login</code> in Claude Code, <code>$cast login</code> in Codex / OpenClaw. Also available as standalone CLI: <code>codecast publish</code>, <code>codecast login</code>, etc.
           </p>
         </div>
 
@@ -380,9 +389,13 @@ export default function Home() {
               <span className="hp-doc-td-label">Codex</span>
               <span className="hp-doc-td-val"><code>~/.codex/sessions/&lt;date&gt;/*.jsonl</code></span>
             </div>
+            <div className="hp-doc-tr">
+              <span className="hp-doc-td-label">OpenClaw</span>
+              <span className="hp-doc-td-val"><code>~/.openclaw/agents/&lt;id&gt;/sessions/*.jsonl</code></span>
+            </div>
           </div>
           <p className="hp-doc-note">
-            Session files are auto-discovered. Use <code>/cast list</code> or <code>$cast list</code> to browse available sessions.
+            Session files are auto-discovered. Use <code>/cast list</code> or <code>$cast list</code> (Codex / OpenClaw) to browse available sessions.
           </p>
         </div>
       </section>

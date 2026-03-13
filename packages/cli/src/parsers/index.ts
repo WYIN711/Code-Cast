@@ -1,6 +1,7 @@
 import { existsSync, readFileSync } from 'fs';
 import { parseClaudeCodeSession } from './claude-code.js';
 import { parseCodexSession } from './codex.js';
+import { parseOpenClawSession } from './openclaw.js';
 import type { ParsedSession } from './types.js';
 
 export type { ParsedSession, SessionEntry, SessionMetadata, SharedSession, RedactionSummary } from './types.js';
@@ -20,15 +21,17 @@ export function parseSession(filePath: string): ParsedSession {
       return parseClaudeCodeSession(filePath);
     case 'codex':
       return parseCodexSession(filePath);
+    case 'openclaw':
+      return parseOpenClawSession(filePath);
     default:
-      throw new Error(`Unknown session format. Expected Claude Code or Codex JSONL file.`);
+      throw new Error(`Unknown session format. Expected Claude Code, Codex, or OpenClaw JSONL file.`);
   }
 }
 
 /**
  * Detect whether a JSONL file is from Claude Code or Codex.
  */
-function detectSource(filePath: string): 'claude-code' | 'codex' | 'unknown' {
+function detectSource(filePath: string): 'claude-code' | 'codex' | 'openclaw' | 'unknown' {
   const basename = filePath.split('/').pop() || '';
 
   // Filename heuristic
@@ -40,6 +43,7 @@ function detectSource(filePath: string): 'claude-code' | 'codex' | 'unknown' {
     try {
       const obj = JSON.parse(line);
       if (obj.type === 'session_meta') return 'codex';
+      if (obj.type === 'session' && obj.version !== undefined) return 'openclaw';
       if (obj.type === 'user' && obj.sessionId) return 'claude-code';
       if (obj.type === 'file-history-snapshot') return 'claude-code';
     } catch {

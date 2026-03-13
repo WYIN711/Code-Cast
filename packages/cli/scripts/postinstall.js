@@ -24,3 +24,10 @@ try {
   mkdirSync(dir, { recursive: true });
   copyFileSync(src, join(dir, 'SKILL.md'));
 } catch {}
+
+// OpenClaw: ~/.openclaw/skills/cast/SKILL.md
+try {
+  const dir = join(homedir(), '.openclaw', 'skills', 'cast');
+  mkdirSync(dir, { recursive: true });
+  copyFileSync(src, join(dir, 'SKILL.md'));
+} catch {}

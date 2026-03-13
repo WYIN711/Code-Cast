@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="102" fill="#E84D3D"/>
+  <g transform="translate(256,256) scale(0.55)" fill="none" stroke="#fff" stroke-width="28" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Lobster claw / pincer shape -->
+    <path d="M-60,-140 C-120,-140 -160,-80 -160,-20 C-160,50 -110,100 -60,100 C-20,100 10,80 20,50"/>
+    <path d="M60,-140 C120,-140 160,-80 160,-20 C160,50 110,100 60,100 C20,100 -10,80 -20,50"/>
+    <!-- Body -->
+    <path d="M0,50 L0,160"/>
+    <path d="M-40,120 L40,120"/>
+    <path d="M-30,160 L30,160"/>
+  </g>
+</svg>

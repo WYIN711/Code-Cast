@@ -95,7 +95,8 @@ export function SessionViewer({ session, isOwner = false, canManage = false, man
   }, [session]);
 
   const agentLabel = session.metadata.agent === 'claude-code' ? 'Claude Code'
-    : session.metadata.agent === 'codex' ? 'Codex' : session.metadata.agent;
+    : session.metadata.agent === 'codex' ? 'Codex'
+    : session.metadata.agent === 'openclaw' ? 'OpenClaw' : session.metadata.agent;
   const date = new Date(session.metadata.startedAt).toLocaleDateString();
 
   return (

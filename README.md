@@ -4,7 +4,7 @@
 
 **[code-cast.dev](https://code-cast.dev)** — Share AI coding sessions as clean, readable web pages.
 
-GitHub has your code. CodeCast has the conversation that built it. Publish your Claude Code or Codex sessions with one command — auto-redacted, instantly shareable.
+GitHub has your code. CodeCast has the conversation that built it. Publish your Claude Code, Codex, or OpenClaw sessions with one command — auto-redacted, instantly shareable.
 
 ## Get Started
 
@@ -12,13 +12,13 @@ GitHub has your code. CodeCast has the conversation that built it. Publish your 
 npm install -g codecast-cli
 ```
 
-Then inside any **Claude Code** or **Codex** session:
+Then inside any **Claude Code**, **Codex**, or **OpenClaw** session:
 
 ```
 # Claude Code
 > /cast
 
-# Codex
+# Codex / OpenClaw
 > $cast
 ```
 ```
@@ -31,10 +31,10 @@ That's it. Anyone with the link can view the full session — no login needed.
 
 ## Commands
 
-Use `/cast` in **Claude Code** and `$cast` in **Codex**:
+Use `/cast` in **Claude Code** and `$cast` in **Codex** / **OpenClaw**:
 
-| Command | Claude Code | Codex | Description |
-|---------|------------|-------|-------------|
+| Command | Claude Code | Codex / OpenClaw | Description |
+|---------|------------|------------------|-------------|
 | Publish | `/cast` | `$cast` | Publish the current session |
 | Login | `/cast login` | `$cast login` | Log in with GitHub — unlocks your profile page |
 | Logout | `/cast logout` | `$cast logout` | Sign out |
@@ -57,7 +57,7 @@ Link your GitHub account to get a public profile page:
 
 ```
 > /cast login       # Claude Code
-> $cast login       # Codex
+> $cast login       # Codex / OpenClaw
 Logged in as yourname
 ```
 
@@ -97,6 +97,7 @@ Works on desktop and mobile.
 |-------|-----------------|
 | Claude Code | `~/.claude/projects/<path>/*.jsonl` |
 | Codex | `~/.codex/sessions/<date>/*.jsonl` |
+| OpenClaw | `~/.openclaw/agents/<id>/sessions/*.jsonl` |
 
 ## Development
 
