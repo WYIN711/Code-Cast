@@ -1,0 +1,54 @@
+{
+  "name": "codecast-cli",
+  "version": "0.1.0",
+  "description": "Share AI coding sessions as beautiful web pages. Supports Claude Code and Codex.",
+  "type": "module",
+  "bin": {
+    "codecast": "./dist/index.js"
+  },
+  "files": [
+    "dist/",
+    "skills/",
+    ".agents/",
+    ".claude-plugin/",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsx src/index.ts",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "codecast",
+    "claude-code",
+    "codex",
+    "terminal",
+    "session",
+    "share",
+    "ai",
+    "coding",
+    "cli"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/WYIN711/Code-Cast"
+  },
+  "homepage": "https://code-cast.dev",
+  "dependencies": {
+    "commander": "^13.1.0",
+    "nanoid": "^5.1.5",
+    "chalk": "^5.4.1",
+    "ora": "^8.2.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0",
+    "tsx": "^4.19.0",
+    "tsup": "^8.3.0",
+    "@types/node": "^22.0.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

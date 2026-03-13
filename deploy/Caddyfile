@@ -1,0 +1,3 @@
+code-cast.dev {
+	reverse_proxy web:3000
+}

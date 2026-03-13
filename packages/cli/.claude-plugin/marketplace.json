@@ -1,0 +1,12 @@
+{
+  "name": "codecast",
+  "owner": { "name": "CodeCast" },
+  "plugins": [
+    {
+      "name": "codecast",
+      "source": { "source": "npm", "package": "codecast-cli" },
+      "description": "Share AI coding sessions as beautiful web pages",
+      "version": "0.1.0"
+    }
+  ]
+}

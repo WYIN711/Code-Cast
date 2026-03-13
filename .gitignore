@@ -1,0 +1,38 @@
+# Dependencies
+node_modules/
+
+# Build output
+.next/
+dist/
+*.tgz
+
+# Environment & secrets
+.env
+.env.local
+.env.production
+.env.test
+.npmrc
+*.pem
+*.key
+
+# Data
+data/
+*.db
+*.db-wal
+*.db-shm
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Deploy secrets (actual .env on server)
+deploy/.env
+
+# Preview output (generated)
+preview/

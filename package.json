@@ -1,0 +1,8 @@
+{
+  "name": "codecast",
+  "private": true,
+  "workspaces": [
+    "packages/cli",
+    "packages/web"
+  ]
+}
