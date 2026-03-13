@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getDb } from '@/lib/db';
+import { auth } from '@/lib/auth';
 import type { Metadata } from 'next';
 
 interface PageProps {
@@ -30,8 +31,13 @@ function getUser(rawUsername: string) {
   return db.prepare('SELECT * FROM users WHERE username = ?').get(username) as UserRow | undefined;
 }
 
-function getUserSessions(userId: string) {
+function getUserSessions(userId: string, isOwner: boolean) {
   const db = getDb();
+  if (isOwner) {
+    return db.prepare(
+      'SELECT id, metadata, visibility, created_at, view_count, pinned, title FROM sessions WHERE user_id = ? AND visibility IN (?, ?) ORDER BY pinned DESC, created_at DESC'
+    ).all(userId, 'public', 'unlisted') as SessionRow[];
+  }
   return db.prepare(
     'SELECT id, metadata, visibility, created_at, view_count, pinned, title FROM sessions WHERE user_id = ? AND visibility = ? ORDER BY pinned DESC, created_at DESC'
   ).all(userId, 'public') as SessionRow[];
@@ -55,7 +61,10 @@ export default async function ProfilePage({ params }: PageProps) {
     notFound();
   }
 
-  const sessions = getUserSessions(user.id);
+  const session = await auth();
+  const isOwner = !!(session as any)?.userId && (session as any).userId === user.id;
+  const sessions = getUserSessions(user.id, isOwner);
+  const publicCount = sessions.filter(s => s.visibility === 'public').length;
 
   return (
     <div style={{ maxWidth: 820, margin: '0 auto', padding: '0 24px' }}>
@@ -71,6 +80,13 @@ export default async function ProfilePage({ params }: PageProps) {
           <img src="/logo.svg" alt="CodeCast" width={24} height={24} style={{ borderRadius: 6 }} />
           CodeCast
         </a>
+        {isOwner && (
+          <a href="/api/auth/signout" style={{
+            fontSize: 13, color: 'var(--text-3)', textDecoration: 'none',
+          }}>
+            Sign out
+          </a>
+        )}
       </nav>
 
       {/* Profile Header */}
@@ -94,11 +110,24 @@ export default async function ProfilePage({ params }: PageProps) {
             </div>
           )}
           <div>
-            <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 4 }}>
-              {user.display_name || user.username}
-            </h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <h1 style={{ fontSize: 22, fontWeight: 700, letterSpacing: '-0.02em', marginBottom: 4 }}>
+                {user.display_name || user.username}
+              </h1>
+              <a
+                href={`https://github.com/${user.username}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                title="GitHub profile"
+                style={{ display: 'inline-flex', color: 'var(--text-3)', marginBottom: 4 }}
+              >
+                <svg width={18} height={18} viewBox="0 0 16 16" fill="currentColor">
+                  <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z" />
+                </svg>
+              </a>
+            </div>
             <p style={{ fontSize: 13, color: 'var(--text-3)' }}>
-              @{user.username} &middot; {sessions.length} public session{sessions.length !== 1 ? 's' : ''}
+              @{user.username} &middot; {publicCount} public session{publicCount !== 1 ? 's' : ''}
             </p>
           </div>
         </div>
@@ -136,6 +165,14 @@ export default async function ProfilePage({ params }: PageProps) {
                       background: 'var(--bg-2)', border: '1px solid var(--border-light)',
                       color: 'var(--text-2)',
                     }}>{agentLabel}</span>
+                    {s.visibility === 'unlisted' && (
+                      <span style={{
+                        display: 'inline-flex', padding: '1px 7px', borderRadius: 3,
+                        fontSize: 10, fontWeight: 600, fontFamily: 'var(--font-mono)',
+                        background: 'transparent', border: '1px dashed var(--border-light)',
+                        color: 'var(--text-3)',
+                      }}>unlisted</span>
+                    )}
                     <span style={{ fontWeight: 600, fontSize: 14 }}>{displayTitle}</span>
                   </div>
                   <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12, fontSize: 12, color: 'var(--text-3)' }}>

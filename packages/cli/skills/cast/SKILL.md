@@ -2,7 +2,7 @@
 name: cast
 description: Publish, manage, and share CodeCast sessions
 user_invocable: true
-argument-hint: "[login | publish | delete <id> | history | list]"
+argument-hint: "[login | logout | publish | delete <id> | history | list]"
 ---
 
 Manage CodeCast sessions — publish, login, delete, and view history. All from within your coding session.
@@ -23,6 +23,13 @@ Authenticate with GitHub to link sessions to a profile.
 1. Run: `codecast login`
 2. A browser window will open for GitHub OAuth.
 3. After login completes, confirm with: `codecast whoami`
+
+## `logout`
+
+Remove stored authentication.
+
+1. Run: `codecast logout`
+2. Confirm to the user that they have been logged out.
 
 ## `delete <id>`
 

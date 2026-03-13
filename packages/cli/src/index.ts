@@ -106,8 +106,13 @@ program
       console.log('\n' + chalk.green.bold('Share link: ') + chalk.cyan.underline(result.url));
       console.log(chalk.dim(`ID: ${result.id}`));
 
-      // Show manage link for unauthenticated users
-      if (!getToken() && result.manageToken) {
+      const authInfo = getAuth();
+      if (authInfo) {
+        // Logged-in: show profile link
+        const profileUrl = `${options.server}/@${authInfo.username}`;
+        console.log(chalk.dim(`Profile: ${profileUrl}`));
+      } else if (result.manageToken) {
+        // Anonymous: show manage link
         console.log(chalk.dim(`Manage: ${result.url}?key=${result.manageToken}`));
       }
     } catch (err: unknown) {
