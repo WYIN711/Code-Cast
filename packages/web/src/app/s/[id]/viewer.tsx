@@ -34,7 +34,7 @@ interface SessionData {
   viewCount: number;
 }
 
-export function SessionViewer({ session, isOwner = false, canManage = false, manageToken }: { session: SessionData; isOwner?: boolean; canManage?: boolean; manageToken?: string }) {
+export function SessionViewer({ session, isOwner = false, canManage = false, manageToken, authorUsername }: { session: SessionData; isOwner?: boolean; canManage?: boolean; manageToken?: string; authorUsername?: string }) {
   const [search, setSearch] = useState('');
   const [showThinking, setShowThinking] = useState(false);
   const [theme, setTheme] = useState<Theme>('system');
@@ -174,6 +174,11 @@ export function SessionViewer({ session, isOwner = false, canManage = false, man
           display: 'flex', flexWrap: 'wrap', gap: 16,
           fontSize: 12, color: 'var(--text-3)',
         }}>
+          {authorUsername && (
+            <a href={`/@${authorUsername}`} style={{ color: 'var(--text-2)', textDecoration: 'none', fontWeight: 500 }}>
+              @{authorUsername}
+            </a>
+          )}
           {session.metadata.project && <span>{session.metadata.project}</span>}
           <span>{stats.duration}</span>
           <span>{stats.userMsgs} messages &middot; {stats.toolCalls} tool calls</span>

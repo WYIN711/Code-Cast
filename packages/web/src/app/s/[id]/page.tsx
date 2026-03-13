@@ -74,8 +74,15 @@ export default async function SessionPage({ params, searchParams }: PageProps) {
     notFound();
   }
 
-  // Increment view count once per page load (not in generateMetadata)
+  // Look up author username
   const db = getDb();
+  let authorUsername: string | undefined;
+  if (session.userId) {
+    const author = db.prepare('SELECT username FROM users WHERE id = ?').get(session.userId) as { username: string } | undefined;
+    authorUsername = author?.username;
+  }
+
+  // Increment view count once per page load (not in generateMetadata)
   db.prepare('UPDATE sessions SET view_count = view_count + 1 WHERE id = ?').run(id);
   session.viewCount = (session.viewCount || 0) + 1;
 
@@ -85,6 +92,7 @@ export default async function SessionPage({ params, searchParams }: PageProps) {
       isOwner={isOwner}
       canManage={canManage}
       manageToken={canManage ? key : undefined}
+      authorUsername={authorUsername}
     />
   );
 }
