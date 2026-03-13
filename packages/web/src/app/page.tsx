@@ -269,7 +269,7 @@ export default function Home() {
             <h3>Manage sessions</h3>
           </div>
           <p className="hp-doc-desc">
-            Every upload returns a <strong>manage token</strong> — a one-time key that lets you delete or update the session without logging in.
+            Every upload returns a <strong>manage token</strong> — a one-time key that lets you delete or update the session without logging in. The CLI saves it automatically.
           </p>
           <div className="hp-doc-code">
             <span className="hp-doc-code-line"><span className="hp-prompt">$</span> codecast delete abc123</span>
@@ -281,15 +281,32 @@ export default function Home() {
             <span className="hp-doc-code-line hp-doc-code-dim">    https://code-cast.dev/s/abc123</span>
           </div>
           <p className="hp-doc-desc">
-            Open the manage link in a browser to see delete and visibility controls directly on the page.
-            For full account features, log in with GitHub:
+            You can also open the manage link in a browser — it shows delete and visibility controls directly on the page, no login needed.
+          </p>
+        </div>
+
+        {/* GitHub login & profile */}
+        <div className="hp-doc">
+          <div className="hp-doc-header">
+            <span className="hp-doc-icon">@</span>
+            <h3>GitHub login & profile</h3>
+          </div>
+          <p className="hp-doc-desc">
+            Link your GitHub account to unlock a public profile page at <code>code-cast.dev/@username</code>.
+            All sessions you publish while logged in are tied to your account — you can manage them from any device, and your public sessions are listed on your profile for anyone to browse.
           </p>
           <div className="hp-doc-code">
             <span className="hp-doc-code-line"><span className="hp-prompt">$</span> codecast login</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Opening browser for GitHub login...</span>
+            <span className="hp-doc-code-line hp-doc-code-dim">Logged in as <span style={{ color: 'var(--green)' }}>yourname</span></span>
           </div>
+          <ul className="hp-doc-list">
+            <li><strong>Profile page</strong> — your avatar, display name, and all public sessions at <code>code-cast.dev/@yourname</code></li>
+            <li><strong>Cross-device management</strong> — delete or change visibility from any browser where you&apos;re signed in</li>
+            <li><strong>Ownership</strong> — sessions are permanently linked to your account, not just a local token</li>
+          </ul>
           <p className="hp-doc-note">
-            Logged-in sessions are linked to your profile page at <code>code-cast.dev/@username</code>
+            Login is optional. Without it, you can still publish and manage sessions via the manage token.
           </p>
         </div>
 
@@ -318,7 +335,7 @@ export default function Home() {
             </div>
             <div className="hp-doc-tr">
               <span className="hp-doc-td-cmd"><code>codecast login</code></span>
-              <span className="hp-doc-td-val">Authenticate via GitHub OAuth.</span>
+              <span className="hp-doc-td-val">Log in with GitHub. Unlocks profile page & cross-device management.</span>
             </div>
             <div className="hp-doc-tr">
               <span className="hp-doc-td-cmd"><code>codecast logout</code></span>
