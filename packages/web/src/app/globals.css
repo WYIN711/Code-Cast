@@ -89,6 +89,7 @@ a:hover {
 .hp-hero { display: flex; gap: 48px; align-items: flex-start; padding: 56px 0 0; }
 .hp-hero-left { flex: 1; min-width: 0; }
 .hp-hero-right { width: 280px; flex-shrink: 0; }
+.hp-slogan { font-size: 13px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--text-3); margin-bottom: 12px; }
 .hp-hero h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.2; margin-bottom: 10px; }
 .hp-sub { font-size: 14px; color: var(--text-2); line-height: 1.6; margin-bottom: 20px; }
 .hp-usecases { display: flex; flex-direction: column; gap: 5px; margin-bottom: 24px; }

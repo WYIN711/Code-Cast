@@ -31,6 +31,7 @@ export default function Home() {
       {/* Hero + Steps */}
       <section className="hp-hero">
         <div className="hp-hero-left">
+          <p className="hp-slogan">Code is the outcome. Session is the story.</p>
           <h1>Share your AI<br/>coding sessions</h1>
           <p className="hp-sub">One command to turn terminal transcripts into clean, shareable pages.</p>
           <div className="hp-usecases">
