@@ -18,7 +18,10 @@ Then inside any **Claude Code**, **Codex**, or **OpenClaw** session:
 # Claude Code
 > /cast
 
-# Codex / OpenClaw
+# Claude Code / OpenClaw
+> /cast
+
+# Codex
 > $cast
 ```
 ```
@@ -31,9 +34,9 @@ That's it. Anyone with the link can view the full session — no login needed.
 
 ## Commands
 
-Use `/cast` in **Claude Code** and `$cast` in **Codex** / **OpenClaw**:
+Use `/cast` in **Claude Code** / **OpenClaw** and `$cast` in **Codex**:
 
-| Command | Claude Code | Codex / OpenClaw | Description |
+| Command | Claude Code / OpenClaw | Codex | Description |
 |---------|------------|------------------|-------------|
 | Publish | `/cast` | `$cast` | Publish the current session |
 | Login | `/cast login` | `$cast login` | Log in with GitHub — unlocks your profile page |
@@ -57,7 +60,8 @@ Link your GitHub account to get a public profile page:
 
 ```
 > /cast login       # Claude Code
-> $cast login       # Codex / OpenClaw
+> /cast login       # OpenClaw
+> $cast login       # Codex
 Logged in as yourname
 ```
 
