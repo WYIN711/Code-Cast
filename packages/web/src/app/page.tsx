@@ -388,11 +388,10 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="hp-footer">
-        <span>CodeCast</span>
+        <span>Built by <a href="https://x.com/wyin711">@wyin711</a></span>
         <div className="hp-footer-links">
           <a href="#docs">Docs</a>
           <a href="https://github.com/WYIN711/Code-Cast">GitHub</a>
-          <a href="https://x.com/wyin711">Twitter</a>
           <a href="https://code-cast.dev">code-cast.dev</a>
         </div>
       </footer>
