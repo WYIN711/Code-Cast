@@ -8,6 +8,7 @@ import { dirname } from 'path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const src = join(__dirname, '..', 'skills', 'cast', 'SKILL.md');
+const srcOpenClaw = join(__dirname, '..', 'skills', 'cast', 'SKILL.openclaw.md');
 
 if (!existsSync(src)) process.exit(0);
 
@@ -25,9 +26,10 @@ try {
   copyFileSync(src, join(dir, 'SKILL.md'));
 } catch {}
 
-// OpenClaw: ~/.openclaw/skills/cast/SKILL.md
+// OpenClaw: ~/.openclaw/skills/cast/SKILL.md (uses OpenClaw-specific frontmatter)
 try {
   const dir = join(homedir(), '.openclaw', 'skills', 'cast');
   mkdirSync(dir, { recursive: true });
-  copyFileSync(src, join(dir, 'SKILL.md'));
+  const openclawSrc = existsSync(srcOpenClaw) ? srcOpenClaw : src;
+  copyFileSync(openclawSrc, join(dir, 'SKILL.md'));
 } catch {}
