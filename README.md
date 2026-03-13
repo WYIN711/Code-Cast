@@ -207,7 +207,7 @@ cp .env.example .env
 docker compose up -d --build
 ```
 
-See `deploy/setup.sh` for EC2 provisioning steps.
+See [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md) for full infrastructure details (EC2, Route 53, SSL, Docker, SSH).
 
 ## API
 
