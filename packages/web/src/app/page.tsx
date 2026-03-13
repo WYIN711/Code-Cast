@@ -25,6 +25,7 @@ export default function Home() {
         <div className="hp-nav-r">
           <a href="#docs" className="hp-nav-link">Docs</a>
           <a href="https://github.com/WYIN711/Code-Cast" className="hp-nav-link">GitHub</a>
+          <a href="https://t.me/+NBlMMSZaNl4zMGQx" className="hp-nav-link">Telegram</a>
         </div>
       </nav>
 
@@ -392,6 +393,7 @@ export default function Home() {
         <div className="hp-footer-links">
           <a href="#docs">Docs</a>
           <a href="https://github.com/WYIN711/Code-Cast">GitHub</a>
+          <a href="https://t.me/+NBlMMSZaNl4zMGQx">Telegram</a>
           <a href="https://code-cast.dev">code-cast.dev</a>
         </div>
       </footer>
