@@ -14,7 +14,8 @@ export async function GET(request: NextRequest) {
   if (!session || !(session as any).userId) {
     // If called with ?callback=<url>, redirect to sign in first
     const callbackUrl = request.nextUrl.searchParams.get('callback');
-    const signInUrl = new URL('/api/auth/signin', request.nextUrl.origin);
+    const baseUrl = process.env.NEXTAUTH_URL || request.nextUrl.origin;
+    const signInUrl = new URL('/api/auth/signin', baseUrl);
     signInUrl.searchParams.set('callbackUrl', `/api/auth/cli-token${callbackUrl ? `?callback=${encodeURIComponent(callbackUrl)}` : ''}`);
     return NextResponse.redirect(signInUrl);
   }
