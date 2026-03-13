@@ -1,6 +1,6 @@
 {
   "name": "codecast-cli",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Share AI coding sessions as beautiful web pages. Supports Claude Code and Codex.",
   "type": "module",
   "bin": {
