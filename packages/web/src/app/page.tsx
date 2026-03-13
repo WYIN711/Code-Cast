@@ -186,6 +186,9 @@ export default function Home() {
             Inside your coding session, type the command. It parses the current conversation, redacts sensitive data, and uploads — all in one step:
           </p>
           <div className="hp-doc-code">
+            <button className="hp-doc-copy" onClick={e => copyCmd('npm i -g codecast-cli', e.currentTarget)} title="Copy install command">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
             <span className="hp-doc-code-line"> </span>
@@ -265,10 +268,16 @@ export default function Home() {
             Every upload returns a <strong>manage token</strong> — a one-time key that lets you delete or update the session without an account. The token is saved locally and used automatically.
           </p>
           <div className="hp-doc-code">
+            <button className="hp-doc-copy" onClick={e => copyCmd('/cast delete abc123', e.currentTarget)} title="Copy">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123  <span className="hp-doc-code-dim">or $cast delete abc123</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Deleted session abc123</span>
           </div>
           <div className="hp-doc-code">
+            <button className="hp-doc-copy" onClick={e => copyCmd('/cast history', e.currentTarget)} title="Copy">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history  <span className="hp-doc-code-dim">or $cast history</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">  2026-03-13 21:00  abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">    https://code-cast.dev/s/abc123</span>
@@ -289,6 +298,9 @@ export default function Home() {
             All sessions you publish while logged in are tied to your account — you can manage them from any device, and your public sessions are listed on your profile for anyone to browse.
           </p>
           <div className="hp-doc-code">
+            <button className="hp-doc-copy" onClick={e => copyCmd('/cast login', e.currentTarget)} title="Copy">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            </button>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login  <span className="hp-doc-code-dim">or $cast login</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Opening browser for GitHub login...</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Logged in as <span style={{ color: 'var(--green)' }}>yourname</span></span>
@@ -380,6 +392,7 @@ export default function Home() {
         <div className="hp-footer-links">
           <a href="#docs">Docs</a>
           <a href="https://github.com/WYIN711/Code-Cast">GitHub</a>
+          <a href="https://x.com/wyin711">Twitter</a>
           <a href="https://code-cast.dev">code-cast.dev</a>
         </div>
       </footer>
