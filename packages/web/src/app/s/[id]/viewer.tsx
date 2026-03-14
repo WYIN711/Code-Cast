@@ -288,7 +288,8 @@ function StatItem({ n, label }: { n: number | string; label: string }) {
 
 function EntryCard({ entry }: { entry: Entry }) {
   const config = AVATAR_CONFIG[entry.type] || AVATAR_CONFIG.system;
-  const needsTruncation = entry.content.length >= 600;
+  const displayContent = entry.type === 'user' ? stripBotMetadata(entry.content) : entry.content;
+  const needsTruncation = displayContent.length >= 600;
   const [expanded, setExpanded] = useState(!needsTruncation);
 
   return (
@@ -312,7 +313,7 @@ function EntryCard({ entry }: { entry: Entry }) {
         whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere',
         maxHeight: expanded ? 'none' : 200, overflow: 'hidden', position: 'relative',
       }}>
-        {renderContent(entry.content)}
+        {renderContent(displayContent)}
         {!expanded && (
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0, height: 60,
@@ -544,6 +545,17 @@ function OwnerControls({ sessionId, visibility, manageToken }: { sessionId: stri
       >Delete</button>
     </div>
   );
+}
+
+// --- Bot Metadata Stripping ---
+
+function stripBotMetadata(text: string): string {
+  // Strip "Conversation info (untrusted metadata):\n```json\n{...}\n```" and
+  // "Sender (untrusted metadata):\n```json\n{...}\n```" blocks injected by bot platforms
+  return text
+    .replace(/Conversation info \(untrusted metadata\):\n```json\n[\s\S]*?```\n\n?/g, '')
+    .replace(/Sender \(untrusted metadata\):\n```json\n[\s\S]*?```\n\n?/g, '')
+    .trim();
 }
 
 // --- Content Rendering ---

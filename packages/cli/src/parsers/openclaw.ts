@@ -101,21 +101,27 @@ export function parseOpenClawSession(filePath: string): ParsedSession {
     if (role === 'user') {
       const content = msg.content;
       if (typeof content === 'string') {
-        if (!firstUserMessage) firstUserMessage = content;
-        entries.push({
-          type: 'user',
-          timestamp: obj.timestamp || '',
-          content,
-        });
+        const cleaned = stripBotMetadata(content);
+        if (cleaned) {
+          if (!firstUserMessage) firstUserMessage = cleaned;
+          entries.push({
+            type: 'user',
+            timestamp: obj.timestamp || '',
+            content: cleaned,
+          });
+        }
       } else if (Array.isArray(content)) {
         for (const block of content) {
           if (block.type === 'text' && block.text) {
-            if (!firstUserMessage) firstUserMessage = block.text;
-            entries.push({
-              type: 'user',
-              timestamp: obj.timestamp || '',
-              content: block.text,
-            });
+            const cleaned = stripBotMetadata(block.text);
+            if (cleaned) {
+              if (!firstUserMessage) firstUserMessage = cleaned;
+              entries.push({
+                type: 'user',
+                timestamp: obj.timestamp || '',
+                content: cleaned,
+              });
+            }
           }
         }
       }
@@ -307,6 +313,13 @@ function formatToolCallContent(name: string, input?: Record<string, unknown>): s
       }
       return JSON.stringify(input, null, 2);
   }
+}
+
+function stripBotMetadata(text: string): string {
+  return text
+    .replace(/Conversation info \(untrusted metadata\):\n```json\n[\s\S]*?```\n\n?/g, '')
+    .replace(/Sender \(untrusted metadata\):\n```json\n[\s\S]*?```\n\n?/g, '')
+    .trim();
 }
 
 function generateTitle(firstMessage: string): string {
