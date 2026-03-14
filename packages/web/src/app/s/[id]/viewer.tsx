@@ -312,7 +312,7 @@ function EntryCard({ entry }: { entry: Entry }) {
         whiteSpace: 'pre-wrap', wordBreak: 'break-word', overflowWrap: 'anywhere',
         maxHeight: expanded ? 'none' : 200, overflow: 'hidden', position: 'relative',
       }}>
-        {entry.content}
+        {renderContent(entry.content)}
         {!expanded && (
           <div style={{
             position: 'absolute', bottom: 0, left: 0, right: 0, height: 60,
@@ -438,15 +438,12 @@ function ToolGroup({ entries }: { entries: Entry[] }) {
           </span>
         )}
         {!expanded && !isFileOp && (
-          <pre style={{
-            background: 'var(--bg-2)', border: '1px solid var(--border-light)', borderRadius: 8,
-            padding: '10px 14px', marginTop: 6, overflow: 'hidden',
+          <div style={{
             fontFamily: 'var(--font-mono)', fontSize: 12, lineHeight: 1.5, color: 'var(--text-2)',
-            maxHeight: 60, textOverflow: 'ellipsis', whiteSpace: 'pre-wrap', wordBreak: 'break-word',
-            overflowWrap: 'anywhere',
+            marginTop: 6, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
           }}>
-            {firstLine.substring(0, 120)}
-          </pre>
+            {getToolSummary(toolName, toolCall.content, toolCall.toolInput)}
+          </div>
         )}
       </div>
 
@@ -547,6 +544,128 @@ function OwnerControls({ sessionId, visibility, manageToken }: { sessionId: stri
       >Delete</button>
     </div>
   );
+}
+
+// --- Content Rendering ---
+
+function renderContent(text: string): React.ReactNode {
+  // Split text by fenced code blocks: ```lang\n...\n```
+  const parts: React.ReactNode[] = [];
+  const codeBlockRegex = /```(\w*)\n([\s\S]*?)```/g;
+  let lastIndex = 0;
+  let match;
+
+  while ((match = codeBlockRegex.exec(text)) !== null) {
+    // Text before the code block
+    if (match.index > lastIndex) {
+      parts.push(
+        <span key={`t${lastIndex}`} style={{ whiteSpace: 'pre-wrap' }}>
+          {text.slice(lastIndex, match.index)}
+        </span>
+      );
+    }
+
+    const lang = match[1];
+    const code = match[2];
+    parts.push(
+      <div key={`c${match.index}`} style={{ margin: '8px 0' }}>
+        {lang && (
+          <div style={{
+            fontFamily: 'var(--font-mono)', fontSize: 11, color: 'var(--text-3)',
+            padding: '4px 12px', background: 'var(--bg-3)', borderRadius: '8px 8px 0 0',
+            border: '1px solid var(--border-light)', borderBottom: 'none',
+          }}>{lang}</div>
+        )}
+        <pre style={{
+          margin: 0, padding: '12px 14px',
+          background: 'var(--bg-2)', border: '1px solid var(--border-light)',
+          borderRadius: lang ? '0 0 8px 8px' : 8,
+          fontFamily: 'var(--font-mono)', fontSize: 13, lineHeight: 1.5,
+          overflowX: 'auto', color: 'var(--text)',
+        }}>
+          <code>{code}</code>
+        </pre>
+      </div>
+    );
+
+    lastIndex = match.index + match[0].length;
+  }
+
+  // Remaining text after last code block
+  if (lastIndex < text.length) {
+    parts.push(
+      <span key={`t${lastIndex}`} style={{ whiteSpace: 'pre-wrap' }}>
+        {text.slice(lastIndex)}
+      </span>
+    );
+  }
+
+  // No code blocks found — return plain text
+  if (parts.length === 0) {
+    return text;
+  }
+
+  return <>{parts}</>;
+}
+
+function getToolSummary(toolName: string, content: string, toolInput?: Record<string, unknown>): string {
+  // Use toolInput for a clean summary when available
+  if (toolInput) {
+    switch (toolName) {
+      case 'WebFetch':
+        return `Fetch: ${toolInput.url || ''}`;
+      case 'WebSearch':
+        return `Search: ${toolInput.query || ''}`;
+      case 'AskUserQuestion': {
+        const questions = toolInput.questions as Array<{ question?: string }> | undefined;
+        if (questions?.[0]?.question) return `Ask: ${questions[0].question}`;
+        return 'Ask user a question';
+      }
+      case 'Skill':
+        return `Skill: ${toolInput.skill || ''}`;
+      case 'NotebookEdit':
+        return `Edit notebook: ${toolInput.notebook_path || ''}`;
+      case 'TaskCreate':
+        return `Create task: ${toolInput.subject || ''}`;
+      case 'TaskUpdate':
+        return `Update task: ${toolInput.taskId || ''}${toolInput.status ? ` → ${toolInput.status}` : ''}`;
+      case 'TaskList':
+        return 'List tasks';
+      case 'TaskGet':
+        return `Get task: ${toolInput.taskId || ''}`;
+      case 'EnterPlanMode':
+        return 'Enter plan mode';
+      case 'ExitPlanMode':
+        return 'Exit plan mode';
+    }
+
+    // Notion MCP tools
+    if (toolName.includes('notion')) {
+      if (toolName.includes('search')) return `Notion search: ${toolInput.query || ''}`;
+      if (toolName.includes('fetch')) return `Notion fetch: ${String(toolInput.id || '').substring(0, 60)}`;
+      if (toolName.includes('create-pages')) return `Notion create page`;
+      if (toolName.includes('update-page')) return `Notion update: ${toolInput.command || ''}`;
+      if (toolName.includes('create-database')) return `Notion create DB: ${toolInput.title || ''}`;
+      if (toolName.includes('get-comments')) return `Notion get comments`;
+      if (toolName.includes('create-comment')) return `Notion add comment`;
+      return `Notion: ${toolName.split('__').pop() || toolName}`;
+    }
+  }
+
+  // Fallback: try to extract a meaningful first line from content
+  const firstLine = content.split('\n')[0];
+  // If it looks like JSON (starts with { or [), try to find something better
+  if (firstLine.startsWith('{') || firstLine.startsWith('[')) {
+    // Find first non-bracket, non-whitespace line
+    const lines = content.split('\n');
+    for (const line of lines) {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('{') && !trimmed.startsWith('[') && !trimmed.startsWith('}') && !trimmed.startsWith(']')) {
+        return trimmed.substring(0, 120);
+      }
+    }
+  }
+  return firstLine.substring(0, 120);
 }
 
 // --- Helpers ---

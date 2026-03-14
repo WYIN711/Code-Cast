@@ -269,7 +269,42 @@ function formatToolCallContent(name: string, input?: Record<string, unknown>): s
       return `Find files matching "${input.pattern || ''}"`;
     case 'Task':
       return `Spawn ${input.subagent_type || 'agent'}: ${input.description || ''}`;
+    case 'WebFetch':
+      return `Fetch: ${input.url || ''}`;
+    case 'WebSearch':
+      return `Search: ${input.query || ''}`;
+    case 'AskUserQuestion': {
+      const questions = input.questions as Array<{ question?: string }> | undefined;
+      return `Ask: ${questions?.[0]?.question || ''}`;
+    }
+    case 'Skill':
+      return `Skill: ${input.skill || ''}`;
+    case 'NotebookEdit':
+      return `Edit notebook: ${input.notebook_path || ''}`;
+    case 'TaskCreate':
+      return `Create task: ${input.subject || ''}`;
+    case 'TaskUpdate':
+      return `Update task: ${input.taskId || ''}${input.status ? ` → ${input.status}` : ''}`;
+    case 'TaskList':
+      return 'List tasks';
+    case 'TaskGet':
+      return `Get task: ${input.taskId || ''}`;
+    case 'EnterPlanMode':
+      return 'Enter plan mode';
+    case 'ExitPlanMode':
+      return 'Exit plan mode';
     default:
+      // Notion MCP tools
+      if (name.includes('notion')) {
+        if (name.includes('search')) return `Notion search: ${input.query || ''}`;
+        if (name.includes('fetch')) return `Notion fetch: ${String(input.id || '').substring(0, 80)}`;
+        if (name.includes('create-pages')) return `Notion create page`;
+        if (name.includes('update-page')) return `Notion update: ${input.command || ''}`;
+        if (name.includes('create-database')) return `Notion create DB: ${input.title || ''}`;
+        if (name.includes('get-comments')) return `Notion get comments`;
+        if (name.includes('create-comment')) return `Notion add comment`;
+        return `${name.split('__').pop() || name}`;
+      }
       return JSON.stringify(input, null, 2);
   }
 }
