@@ -4,7 +4,7 @@
 
 **[code-cast.dev](https://code-cast.dev)** — Share AI coding sessions as clean, readable web pages.
 
-GitHub has your code. CodeCast has the conversation that built it. Publish your Claude Code, Codex, or OpenClaw sessions with one command — auto-redacted, instantly shareable.
+GitHub has your code. CodeCast has the conversation that built it. Publish your Claude Code, Codex, OpenClaw, OpenCode, or Gemini CLI sessions with one command — auto-redacted, instantly shareable.
 
 ## Get Started
 
@@ -12,7 +12,7 @@ GitHub has your code. CodeCast has the conversation that built it. Publish your 
 npm install -g codecast-cli
 ```
 
-Then inside any **Claude Code**, **Codex**, or **OpenClaw** session:
+Then inside any **Claude Code**, **Codex**, **OpenClaw**, **OpenCode**, or **Gemini CLI** session:
 
 ```
 # Claude Code
@@ -23,6 +23,12 @@ Then inside any **Claude Code**, **Codex**, or **OpenClaw** session:
 
 # Codex
 > $cast
+
+# OpenCode
+> /cast
+
+# Gemini CLI
+> /cast
 ```
 ```
 Published!
@@ -34,10 +40,10 @@ That's it. Anyone with the link can view the full session — no login needed.
 
 ## Commands
 
-Use `/cast` in **Claude Code**, `/skill cast` in **OpenClaw**, and `$cast` in **Codex**:
+Use `/cast` in **Claude Code**, **OpenCode**, and **Gemini CLI**; `/skill cast` in **OpenClaw**; and `$cast` in **Codex**:
 
-| Command | Claude Code | OpenClaw | Codex | Description |
-|---------|-------------|----------|-------|-------------|
+| Command | Claude Code / OpenCode / Gemini CLI | OpenClaw | Codex | Description |
+|---------|--------------------------------------|----------|-------|-------------|
 | Publish | `/cast` | `/skill cast` | `$cast` | Publish the current session |
 | Login | `/cast login` | `/skill cast login` | `$cast login` | Log in with GitHub |
 | Logout | `/cast logout` | `/skill cast logout` | `$cast logout` | Sign out |
@@ -59,7 +65,7 @@ Use `/cast` in **Claude Code**, `/skill cast` in **OpenClaw**, and `$cast` in **
 Link your GitHub account to get a public profile page:
 
 ```
-> /cast login          # Claude Code
+> /cast login          # Claude Code / OpenCode / Gemini CLI
 > /skill cast login   # OpenClaw
 > $cast login          # Codex
 Logged in as yourname
@@ -97,11 +103,35 @@ Works on desktop and mobile.
 
 ## Supported Sources
 
-| Agent | Session Location |
-|-------|-----------------|
-| Claude Code | `~/.claude/projects/<path>/*.jsonl` |
-| Codex | `~/.codex/sessions/<date>/*.jsonl` |
-| OpenClaw | `~/.openclaw/agents/<id>/sessions/*.jsonl` |
+| Agent | Session Location | Format |
+|-------|-----------------|--------|
+| Claude Code | `~/.claude/projects/<path>/*.jsonl` | JSONL |
+| Codex | `~/.codex/sessions/<date>/*.jsonl` | JSONL |
+| OpenClaw | `~/.openclaw/agents/<id>/sessions/*.jsonl` | JSONL |
+| OpenCode | `~/.local/share/opencode/opencode.db` | SQLite |
+| Gemini CLI | `~/.gemini/tmp/<hash>/chats/*.json` | JSON |
+
+### Setting up `/cast` for OpenCode
+
+Copy the slash command file to your project:
+
+```bash
+mkdir -p .opencode/commands
+cp node_modules/codecast-cli/docs/integrations/opencode/cast.md .opencode/commands/cast.md
+```
+
+Or create `.opencode/commands/cast.md` manually — see [`docs/integrations/opencode/cast.md`](docs/integrations/opencode/cast.md).
+
+### Setting up `/cast` for Gemini CLI
+
+Copy the slash command file to your project:
+
+```bash
+mkdir -p .gemini/commands
+cp node_modules/codecast-cli/docs/integrations/gemini-cli/cast.toml .gemini/commands/cast.toml
+```
+
+Or create `.gemini/commands/cast.toml` manually — see [`docs/integrations/gemini-cli/cast.toml`](docs/integrations/gemini-cli/cast.toml).
 
 ## Development
 

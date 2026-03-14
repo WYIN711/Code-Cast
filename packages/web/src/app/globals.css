@@ -177,6 +177,7 @@ a:hover {
 .hp-doc-td-cmd code { font-family: var(--font-mono); font-size: 11px; }
 .hp-doc-td-val { flex: 1; padding: 8px 12px; color: var(--text-2); line-height: 1.5; }
 .hp-doc-td-val code { font-family: var(--font-mono); font-size: 10.5px; background: var(--bg-2); padding: 1px 4px; border-radius: 3px; }
+.hp-doc-table-wide .hp-doc-td-label { width: 220px; }
 .hp-doc-table-wide .hp-doc-td-val { font-size: 12px; }
 
 .hp-footer { padding: 24px 0; display: flex; align-items: center; justify-content: space-between; font-size: 11px; color: var(--text-3); border-top: 1px solid var(--border-light); }

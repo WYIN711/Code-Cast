@@ -1,7 +1,7 @@
 {
   "name": "codecast-cli",
   "version": "0.2.4",
-  "description": "Share AI coding sessions as beautiful web pages. Supports Claude Code, Codex, and OpenClaw.",
+  "description": "Share AI coding sessions as beautiful web pages. Supports Claude Code, Codex, OpenClaw, OpenCode, and Gemini CLI.",
   "type": "module",
   "bin": {
     "codecast": "./dist/index.js"
@@ -26,6 +26,8 @@
     "claude-code",
     "codex",
     "openclaw",
+    "opencode",
+    "gemini-cli",
     "terminal",
     "session",
     "share",
@@ -41,12 +43,14 @@
   "homepage": "https://code-cast.dev",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.52.0",
+    "better-sqlite3": "^11.0.0",
     "commander": "^13.1.0",
     "nanoid": "^5.1.5",
     "chalk": "^5.4.1",
     "ora": "^8.2.0"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.0",
     "typescript": "^5.7.0",
     "tsx": "^4.19.0",
     "tsup": "^8.3.0",

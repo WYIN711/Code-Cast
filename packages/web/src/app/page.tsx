@@ -47,6 +47,14 @@ export default function Home() {
               Claude Code
             </span>
             <span className="hp-plat-btn">
+              <img src="/opencode-icon.svg" width={18} height={18} alt="OpenCode" style={{ borderRadius: 4 }} />
+              OpenCode
+            </span>
+            <span className="hp-plat-btn">
+              <img src="/gemini-icon.svg" width={18} height={18} alt="Gemini" />
+              Gemini CLI
+            </span>
+            <span className="hp-plat-btn">
               <img src="/openai-icon.svg" width={18} height={18} alt="OpenAI" />
               Codex
             </span>
@@ -81,7 +89,7 @@ export default function Home() {
               <div className="hp-step-code">
                 <span className="hp-cmd-text">/cast · /skill cast · $cast</span>
               </div>
-              <div className="hp-step-desc"><strong>/cast</strong> in Claude Code · <strong>/skill cast</strong> in OpenClaw · <strong>$cast</strong> in Codex</div>
+              <div className="hp-step-desc"><strong>/cast</strong> in Claude Code, OpenCode, Gemini CLI · <strong>/skill cast</strong> in OpenClaw · <strong>$cast</strong> in Codex</div>
             </div>
             <div className="hp-step">
               <div className="hp-step-top">
@@ -107,7 +115,7 @@ export default function Home() {
           <div className="hp-feat">
             <div className="hp-feat-icon">{'{}'}</div>
             <h3>Auto-parse</h3>
-            <p>Reads JSONL session files. Messages, tool calls, thinking blocks — all structured automatically.</p>
+            <p>Reads JSONL, JSON, and SQLite session files. Messages, tool calls, thinking blocks — all structured automatically.</p>
           </div>
           <div className="hp-feat">
             <div className="hp-feat-icon">***</div>
@@ -212,7 +220,7 @@ export default function Home() {
             Then inside your coding session, type the command. It parses the current conversation, redacts sensitive data, and uploads — all in one step:
           </p>
           <div className="hp-doc-code">
-            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
+            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code / OpenCode / Gemini CLI</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
             <span className="hp-doc-code-line"> </span>
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># OpenClaw</span></span>
@@ -297,14 +305,14 @@ export default function Home() {
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast delete abc123', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123  <span className="hp-doc-code-dim">/skill cast delete abc123 (OpenClaw) · $cast delete abc123 (Codex)</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123  <span className="hp-doc-code-dim">Works in Claude Code, OpenCode, Gemini CLI · /skill cast delete (OpenClaw) · $cast delete (Codex)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Deleted session abc123</span>
           </div>
           <div className="hp-doc-code">
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast history', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history  <span className="hp-doc-code-dim">/skill cast history (OpenClaw) · $cast history (Codex)</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history  <span className="hp-doc-code-dim">Works in Claude Code, OpenCode, Gemini CLI · /skill cast history (OpenClaw) · $cast history (Codex)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">  2026-03-13 21:00  abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">    https://code-cast.dev/s/abc123</span>
           </div>
@@ -327,7 +335,7 @@ export default function Home() {
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast login', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login  <span className="hp-doc-code-dim">/skill cast login (OpenClaw) · $cast login (Codex)</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login  <span className="hp-doc-code-dim">Works in Claude Code, OpenCode, Gemini CLI · /skill cast login (OpenClaw) · $cast login (Codex)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Opening browser for GitHub login...</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Logged in as <span style={{ color: 'var(--green)' }}>yourname</span></span>
           </div>
@@ -338,7 +346,7 @@ export default function Home() {
             <li><strong>Ownership</strong> — sessions are permanently linked to your account, not just a local token</li>
           </ul>
           <p className="hp-doc-note">
-            Login is optional. Without it, you can still publish and manage sessions via the manage token. Use <code>/cast logout</code>, <code>/skill cast logout</code>, or <code>$cast logout</code> to sign out.
+            Login is optional. Without it, you can still publish and manage sessions via the manage token. Use <code>/cast logout</code> to sign out.
           </p>
         </div>
 
@@ -349,23 +357,23 @@ export default function Home() {
             <h3>Command reference</h3>
           </div>
           <p className="hp-doc-desc">
-            Use <code>/cast</code> in <strong>Claude Code</strong>, <code>/skill cast</code> in <strong>OpenClaw</strong>, and <code>$cast</code> in <strong>Codex</strong>:
+            Use <code>/cast</code> in <strong>Claude Code</strong>, <strong>OpenCode</strong>, and <strong>Gemini CLI</strong>; <code>/skill cast</code> in <strong>OpenClaw</strong>; <code>$cast</code> in <strong>Codex</strong>:
           </p>
           <div className="hp-doc-table hp-doc-table-wide">
             <div className="hp-doc-tr">
-              <span className="hp-doc-td-label">Claude Code</span>
+              <span className="hp-doc-td-label">Claude Code / OpenCode / Gemini CLI</span>
               <span className="hp-doc-td-cmd"><code>/cast</code></span>
               <span className="hp-doc-td-val">Publish the current session as a shareable link.</span>
-            </div>
-            <div className="hp-doc-tr">
-              <span className="hp-doc-td-label">Codex</span>
-              <span className="hp-doc-td-cmd"><code>$cast</code></span>
-              <span className="hp-doc-td-val">Same command, Codex skill syntax.</span>
             </div>
             <div className="hp-doc-tr">
               <span className="hp-doc-td-label">OpenClaw</span>
               <span className="hp-doc-td-cmd"><code>/skill cast</code></span>
               <span className="hp-doc-td-val">OpenClaw skill invocation syntax.</span>
+            </div>
+            <div className="hp-doc-tr">
+              <span className="hp-doc-td-label">Codex</span>
+              <span className="hp-doc-td-cmd"><code>$cast</code></span>
+              <span className="hp-doc-td-val">Codex skill syntax.</span>
             </div>
           </div>
           <div className="hp-doc-table hp-doc-table-wide" style={{ marginTop: 8 }}>
@@ -391,7 +399,7 @@ export default function Home() {
             </div>
           </div>
           <p className="hp-doc-note">
-            Example: <code>/cast login</code> in Claude Code, <code>/skill cast login</code> in OpenClaw, <code>$cast login</code> in Codex. Also available as standalone CLI: <code>codecast publish</code>, <code>codecast login</code>, etc.
+            Example: <code>/cast login</code> in Claude Code / OpenCode / Gemini CLI, <code>/skill cast login</code> in OpenClaw, <code>$cast login</code> in Codex. Also available as standalone CLI: <code>codecast publish</code>, <code>codecast login</code>, etc.
           </p>
         </div>
 
@@ -407,6 +415,14 @@ export default function Home() {
               <span className="hp-doc-td-val"><code>~/.claude/projects/&lt;path&gt;/*.jsonl</code></span>
             </div>
             <div className="hp-doc-tr">
+              <span className="hp-doc-td-label">OpenCode</span>
+              <span className="hp-doc-td-val"><code>~/.local/share/opencode/opencode.db</code> (SQLite)</span>
+            </div>
+            <div className="hp-doc-tr">
+              <span className="hp-doc-td-label">Gemini CLI</span>
+              <span className="hp-doc-td-val"><code>~/.gemini/tmp/&lt;hash&gt;/chats/*.json</code></span>
+            </div>
+            <div className="hp-doc-tr">
               <span className="hp-doc-td-label">Codex</span>
               <span className="hp-doc-td-val"><code>~/.codex/sessions/&lt;date&gt;/*.jsonl</code></span>
             </div>
@@ -416,7 +432,7 @@ export default function Home() {
             </div>
           </div>
           <p className="hp-doc-note">
-            Session files are auto-discovered. Use <code>/cast list</code>, <code>/skill cast list</code>, or <code>$cast list</code> to browse available sessions.
+            Session files are auto-discovered. Use <code>/cast list</code> to browse available sessions. OpenCode and Gemini CLI require a one-time <code>/cast</code> slash command setup — see the <a href="https://github.com/WYIN711/Code-Cast#supported-sources" style={{ color: 'var(--text-2)' }}>README</a> for details.
           </p>
         </div>
       </section>

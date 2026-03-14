@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { parseSession } from './parsers/index.js';
+import { parseSession, listOpenCodeSessions } from './parsers/index.js';
 import { redactSession } from './redact/index.js';
 import { uploadSession } from './upload.js';
 import { generateAITitle } from './ai-title.js';
@@ -33,19 +33,25 @@ program
     const spinner = ora();
 
     try {
-      // Resolve file path
-      let filePath: string;
+      // Resolve session
+      let sessionInfo: SessionInfo;
       if (file) {
-        filePath = resolve(file);
+        sessionInfo = {
+          name: file.split('/').pop() || file,
+          path: resolve(file),
+          source: 'claude-code', // will be auto-detected by parseSession
+          mtime: Date.now(),
+          size: 0,
+        };
       } else {
         spinner.start('Finding latest session...');
-        filePath = findLatestSession();
-        spinner.succeed(`Found session: ${filePath.split('/').pop()}`);
+        sessionInfo = findLatestSessionInfo();
+        spinner.succeed(`Found session: ${sessionInfo.name}`);
       }
 
       // Parse
       spinner.start('Parsing session...');
-      const parsed = parseSession(filePath);
+      const parsed = parseSession(sessionInfo.path, sessionInfo.openCodeSessionId);
       spinner.succeed(`Parsed ${parsed.entries.length} entries (${parsed.metadata.agent})`);
 
       // Redact
@@ -141,7 +147,7 @@ program
   .command('list')
   .description('List recent local sessions')
   .option('-n, --count <n>', 'Number of sessions to show', '10')
-  .option('--source <type>', 'Filter by source: claude-code, codex, openclaw, all', 'all')
+  .option('--source <type>', 'Filter by source: claude-code, codex, openclaw, opencode, gemini-cli, all', 'all')
   .action((options) => {
     const count = parseInt(options.count, 10);
     const sessions = listSessions(options.source, isNaN(count) || count < 1 ? 10 : count);
@@ -153,13 +159,10 @@ program
     console.log(chalk.bold('\nRecent sessions:\n'));
     for (const s of sessions) {
       const date = new Date(s.mtime).toLocaleString();
-      const size = (s.size / 1024).toFixed(0) + ' KB';
-      const label = s.source === 'claude-code'
-        ? chalk.blue('[Claude Code]')
-        : s.source === 'openclaw'
-        ? chalk.magenta('[OpenClaw]')
-        : chalk.green('[Codex]');
-      console.log(`  ${label} ${chalk.dim(date)} ${chalk.white(s.name)} ${chalk.dim(size)}`);
+      const size = s.size > 0 ? (s.size / 1024).toFixed(0) + ' KB' : '';
+      const label = sourceLabel(s.source);
+      const sizeStr = size ? ' ' + chalk.dim(size) : '';
+      console.log(`  ${label} ${chalk.dim(date)} ${chalk.white(s.name)}${sizeStr}`);
       console.log(`    ${chalk.dim(s.path)}`);
     }
     console.log();
@@ -168,9 +171,10 @@ program
 program
   .command('parse')
   .description('Parse a session file and output JSON (for debugging)')
-  .argument('<file>', 'Path to session JSONL file')
-  .action((file: string) => {
-    const parsed = parseSession(resolve(file));
+  .argument('<file>', 'Path to session file')
+  .option('--session-id <id>', 'Session ID (required for OpenCode .db files)')
+  .action((file: string, options) => {
+    const parsed = parseSession(resolve(file), options.sessionId);
     console.log(JSON.stringify(parsed, null, 2));
   });
 
@@ -329,17 +333,30 @@ program.parse();
 interface SessionInfo {
   name: string;
   path: string;
-  source: 'claude-code' | 'codex' | 'openclaw';
+  source: 'claude-code' | 'codex' | 'openclaw' | 'opencode' | 'gemini-cli';
   mtime: number;
   size: number;
+  /** For OpenCode sessions: the session ID within the SQLite database */
+  openCodeSessionId?: string;
 }
 
-function findLatestSession(): string {
+function sourceLabel(source: string): string {
+  switch (source) {
+    case 'claude-code': return chalk.blue('[Claude Code]');
+    case 'codex': return chalk.green('[Codex]');
+    case 'openclaw': return chalk.magenta('[OpenClaw]');
+    case 'opencode': return chalk.yellow('[OpenCode]');
+    case 'gemini-cli': return chalk.cyan('[Gemini CLI]');
+    default: return chalk.dim(`[${source}]`);
+  }
+}
+
+function findLatestSessionInfo(): SessionInfo {
   const sessions = listSessions('all', 1);
   if (sessions.length === 0) {
     throw new Error('No sessions found. Provide a file path explicitly.');
   }
-  return sessions[0].path;
+  return sessions[0];
 }
 
 function listSessions(source: string, limit: number): SessionInfo[] {
@@ -426,6 +443,63 @@ function listSessions(source: string, limit: number): SessionInfo[] {
             continue;
           }
         }
+      }
+    }
+  }
+
+  // OpenCode sessions (SQLite database)
+  if (source === 'all' || source === 'opencode') {
+    const openCodeDbPath = join(homedir(), '.local', 'share', 'opencode', 'opencode.db');
+    if (existsSync(openCodeDbPath)) {
+      try {
+        const sessions = listOpenCodeSessions(openCodeDbPath);
+        for (const s of sessions) {
+          results.push({
+            name: s.title,
+            path: openCodeDbPath,
+            source: 'opencode',
+            mtime: s.mtime,
+            size: 0,
+            openCodeSessionId: s.id,
+          });
+        }
+      } catch {
+        // skip if db is locked or corrupted
+      }
+    }
+  }
+
+  // Gemini CLI sessions (JSON files)
+  if (source === 'all' || source === 'gemini-cli') {
+    const geminiDir = join(homedir(), '.gemini', 'tmp');
+    if (existsSync(geminiDir)) {
+      try {
+        for (const projectHash of readdirSync(geminiDir)) {
+          const chatsDir = join(geminiDir, projectHash, 'chats');
+          try {
+            if (!existsSync(chatsDir) || !statSync(chatsDir).isDirectory()) continue;
+          } catch {
+            continue;
+          }
+          for (const file of readdirSync(chatsDir)) {
+            if (!file.startsWith('session-') || !file.endsWith('.json')) continue;
+            const fullPath = join(chatsDir, file);
+            try {
+              const stat = statSync(fullPath);
+              results.push({
+                name: file,
+                path: fullPath,
+                source: 'gemini-cli',
+                mtime: stat.mtimeMs,
+                size: stat.size,
+              });
+            } catch {
+              continue;
+            }
+          }
+        }
+      } catch {
+        // skip
       }
     }
   }
