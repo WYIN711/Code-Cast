@@ -8,17 +8,21 @@ import { addToHistory, getHistory, findInHistory, removeFromHistory } from './hi
 import { nanoid } from 'nanoid';
 import chalk from 'chalk';
 import ora from 'ora';
-import { readdirSync, statSync, existsSync } from 'fs';
-import { join, resolve } from 'path';
+import { readdirSync, readFileSync, statSync, existsSync } from 'fs';
+import { join, resolve, dirname } from 'path';
 import { homedir } from 'os';
 import { createServer } from 'http';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(readFileSync(join(__dirname, '..', 'package.json'), 'utf-8'));
 
 const program = new Command();
 
 program
   .name('codecast')
   .description('Share AI coding sessions as beautiful web pages')
-  .version('0.1.0');
+  .version(pkg.version);
 
 program
   .command('publish')
