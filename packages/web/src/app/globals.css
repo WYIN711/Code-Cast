@@ -100,7 +100,7 @@ a:hover {
 .hp-usecases { display: flex; flex-direction: column; gap: 5px; margin-bottom: 24px; }
 .hp-uc { display: flex; align-items: baseline; gap: 8px; font-size: 13px; color: var(--text-2); line-height: 1.5; }
 .hp-uc-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--border); flex-shrink: 0; margin-top: 8px; }
-.hp-platforms { display: flex; gap: 8px; }
+.hp-platforms { display: flex; gap: 8px; flex-wrap: wrap; }
 .hp-plat-btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 7px; border: 1px solid var(--border-light); background: var(--bg-2); font-size: 12px; font-weight: 600; color: var(--text); }
 
 .hp-steps-card { border: 1px solid var(--border-light); border-radius: 10px; background: var(--bg-2); overflow: hidden; }
