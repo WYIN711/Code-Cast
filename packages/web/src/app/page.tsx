@@ -215,9 +215,6 @@ export default function Home() {
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
             <span className="hp-doc-code-line"> </span>
-            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
-            <span className="hp-doc-code-line"> </span>
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># OpenClaw</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /skill cast</span>
             <span className="hp-doc-code-line"> </span>

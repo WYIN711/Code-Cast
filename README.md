@@ -18,9 +18,6 @@ Then inside any **Claude Code**, **Codex**, or **OpenClaw** session:
 # Claude Code
 > /cast
 
-# Claude Code
-> /cast
-
 # OpenClaw
 > /skill cast
 
@@ -62,9 +59,9 @@ Use `/cast` in **Claude Code**, `/skill cast` in **OpenClaw**, and `$cast` in **
 Link your GitHub account to get a public profile page:
 
 ```
-> /cast login       # Claude Code
-> /cast login       # OpenClaw
-> $cast login       # Codex
+> /cast login          # Claude Code
+> /skill cast login   # OpenClaw
+> $cast login          # Codex
 Logged in as yourname
 ```
 
