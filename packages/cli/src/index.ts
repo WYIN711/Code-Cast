@@ -2,6 +2,7 @@ import { Command } from 'commander';
 import { parseSession } from './parsers/index.js';
 import { redactSession } from './redact/index.js';
 import { uploadSession } from './upload.js';
+import { generateAITitle } from './ai-title.js';
 import { getAuth, saveAuth, clearAuth, getToken } from './auth.js';
 import { addToHistory, getHistory, findInHistory, removeFromHistory } from './history.js';
 import { nanoid } from 'nanoid';
@@ -61,6 +62,21 @@ program
           spinner.succeed(`Redacted: ${details}`);
         } else {
           spinner.succeed('No sensitive information detected');
+        }
+      }
+
+      // AI title generation
+      if (process.env.ANTHROPIC_API_KEY) {
+        spinner.start('Generating title...');
+        const aiTitle = await generateAITitle(finalSession.entries);
+        if (aiTitle) {
+          finalSession = {
+            ...finalSession,
+            metadata: { ...finalSession.metadata, title: aiTitle },
+          };
+          spinner.succeed(`Title: ${aiTitle}`);
+        } else {
+          spinner.warn('AI title failed, using default');
         }
       }
 

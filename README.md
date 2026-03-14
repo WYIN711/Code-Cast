@@ -18,8 +18,11 @@ Then inside any **Claude Code**, **Codex**, or **OpenClaw** session:
 # Claude Code
 > /cast
 
-# Claude Code / OpenClaw
+# Claude Code
 > /cast
+
+# OpenClaw
+> /skill cast
 
 # Codex
 > $cast
@@ -34,16 +37,16 @@ That's it. Anyone with the link can view the full session — no login needed.
 
 ## Commands
 
-Use `/cast` in **Claude Code** / **OpenClaw** and `$cast` in **Codex**:
+Use `/cast` in **Claude Code**, `/skill cast` in **OpenClaw**, and `$cast` in **Codex**:
 
-| Command | Claude Code / OpenClaw | Codex | Description |
-|---------|------------|------------------|-------------|
-| Publish | `/cast` | `$cast` | Publish the current session |
-| Login | `/cast login` | `$cast login` | Log in with GitHub — unlocks your profile page |
-| Logout | `/cast logout` | `$cast logout` | Sign out |
-| Delete | `/cast delete <id>` | `$cast delete <id>` | Delete a published session |
-| History | `/cast history` | `$cast history` | Show upload history |
-| List | `/cast list` | `$cast list` | List local session files |
+| Command | Claude Code | OpenClaw | Codex | Description |
+|---------|-------------|----------|-------|-------------|
+| Publish | `/cast` | `/skill cast` | `$cast` | Publish the current session |
+| Login | `/cast login` | `/skill cast login` | `$cast login` | Log in with GitHub |
+| Logout | `/cast logout` | `/skill cast logout` | `$cast logout` | Sign out |
+| Delete | `/cast delete <id>` | `/skill cast delete <id>` | `$cast delete <id>` | Delete a published session |
+| History | `/cast history` | `/skill cast history` | `$cast history` | Show upload history |
+| List | `/cast list` | `/skill cast list` | `$cast list` | List local session files |
 
 ### Options
 

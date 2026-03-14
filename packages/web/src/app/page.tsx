@@ -79,9 +79,9 @@ export default function Home() {
                 <span className="hp-step-title">Publish</span>
               </div>
               <div className="hp-step-code">
-                <span className="hp-cmd-text">/cast <span className="hp-prompt">or</span> $cast</span>
+                <span className="hp-cmd-text">/cast · /skill cast · $cast</span>
               </div>
-              <div className="hp-step-desc"><strong>/cast</strong> in Claude Code / OpenClaw · <strong>$cast</strong> in Codex</div>
+              <div className="hp-step-desc"><strong>/cast</strong> in Claude Code · <strong>/skill cast</strong> in OpenClaw · <strong>$cast</strong> in Codex</div>
             </div>
             <div className="hp-step">
               <div className="hp-step-top">
@@ -189,7 +189,7 @@ export default function Home() {
             <h3>Publish a session</h3>
           </div>
           <p className="hp-doc-desc">
-            Install once — the <code>/cast</code> command is automatically registered to Claude Code and OpenClaw, and <code>$cast</code> to Codex:
+            Install once — commands are automatically registered to all platforms:
           </p>
           <div className="hp-doc-code">
             <button className="hp-doc-copy" onClick={e => copyCmd('npm i -g codecast-cli', e.currentTarget)} title="Copy install command">
@@ -201,12 +201,12 @@ export default function Home() {
             <strong>OpenClaw users:</strong> No terminal needed. Just send this message to your OpenClaw agent and it will handle the install for you:
           </p>
           <div className="hp-doc-code">
-            <button className="hp-doc-copy" onClick={e => copyCmd('Install codecast-cli globally via npm, then confirm the /cast command is available.', e.currentTarget)} title="Copy">
+            <button className="hp-doc-copy" onClick={e => copyCmd('Install codecast-cli globally via npm, then confirm /skill cast is available.', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Send this to your OpenClaw agent:</span></span>
             <span className="hp-doc-code-line">Install codecast-cli globally via npm, then</span>
-            <span className="hp-doc-code-line">confirm the /cast command is available.</span>
+            <span className="hp-doc-code-line">confirm /skill cast is available.</span>
           </div>
           <p className="hp-doc-desc">
             Then inside your coding session, type the command. It parses the current conversation, redacts sensitive data, and uploads — all in one step:
@@ -215,8 +215,11 @@ export default function Home() {
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
             <span className="hp-doc-code-line"> </span>
-            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code / OpenClaw</span></span>
+            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Claude Code</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast</span>
+            <span className="hp-doc-code-line"> </span>
+            <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># OpenClaw</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /skill cast</span>
             <span className="hp-doc-code-line"> </span>
             <span className="hp-doc-code-line"><span className="hp-doc-code-dim"># Codex</span></span>
             <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> $cast</span>
@@ -297,14 +300,14 @@ export default function Home() {
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast delete abc123', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123  <span className="hp-doc-code-dim">or $cast delete abc123 (Codex)</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast delete abc123  <span className="hp-doc-code-dim">/skill cast delete abc123 (OpenClaw) · $cast delete abc123 (Codex)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Deleted session abc123</span>
           </div>
           <div className="hp-doc-code">
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast history', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history  <span className="hp-doc-code-dim">or $cast history (Codex)</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast history  <span className="hp-doc-code-dim">/skill cast history (OpenClaw) · $cast history (Codex)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">  2026-03-13 21:00  abc123</span>
             <span className="hp-doc-code-line hp-doc-code-dim">    https://code-cast.dev/s/abc123</span>
           </div>
@@ -327,7 +330,7 @@ export default function Home() {
             <button className="hp-doc-copy" onClick={e => copyCmd('/cast login', e.currentTarget)} title="Copy">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
             </button>
-            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login  <span className="hp-doc-code-dim">or $cast login (Codex)</span></span>
+            <span className="hp-doc-code-line"><span className="hp-prompt">{'>'}</span> /cast login  <span className="hp-doc-code-dim">/skill cast login (OpenClaw) · $cast login (Codex)</span></span>
             <span className="hp-doc-code-line hp-doc-code-dim">Opening browser for GitHub login...</span>
             <span className="hp-doc-code-line hp-doc-code-dim">Logged in as <span style={{ color: 'var(--green)' }}>yourname</span></span>
           </div>
@@ -338,7 +341,7 @@ export default function Home() {
             <li><strong>Ownership</strong> — sessions are permanently linked to your account, not just a local token</li>
           </ul>
           <p className="hp-doc-note">
-            Login is optional. Without it, you can still publish and manage sessions via the manage token. Use <code>/cast logout</code> or <code>$cast logout</code> (Codex) to sign out.
+            Login is optional. Without it, you can still publish and manage sessions via the manage token. Use <code>/cast logout</code>, <code>/skill cast logout</code>, or <code>$cast logout</code> to sign out.
           </p>
         </div>
 
@@ -349,7 +352,7 @@ export default function Home() {
             <h3>Command reference</h3>
           </div>
           <p className="hp-doc-desc">
-            Use <code>/cast</code> in <strong>Claude Code</strong> / <strong>OpenClaw</strong> and <code>$cast</code> in <strong>Codex</strong>:
+            Use <code>/cast</code> in <strong>Claude Code</strong>, <code>/skill cast</code> in <strong>OpenClaw</strong>, and <code>$cast</code> in <strong>Codex</strong>:
           </p>
           <div className="hp-doc-table hp-doc-table-wide">
             <div className="hp-doc-tr">
@@ -364,8 +367,8 @@ export default function Home() {
             </div>
             <div className="hp-doc-tr">
               <span className="hp-doc-td-label">OpenClaw</span>
-              <span className="hp-doc-td-cmd"><code>/cast</code></span>
-              <span className="hp-doc-td-val">Same slash command, OpenClaw skill syntax.</span>
+              <span className="hp-doc-td-cmd"><code>/skill cast</code></span>
+              <span className="hp-doc-td-val">OpenClaw skill invocation syntax.</span>
             </div>
           </div>
           <div className="hp-doc-table hp-doc-table-wide" style={{ marginTop: 8 }}>
@@ -391,7 +394,7 @@ export default function Home() {
             </div>
           </div>
           <p className="hp-doc-note">
-            Example: <code>/cast login</code> in Claude Code / OpenClaw, <code>$cast login</code> in Codex. Also available as standalone CLI: <code>codecast publish</code>, <code>codecast login</code>, etc.
+            Example: <code>/cast login</code> in Claude Code, <code>/skill cast login</code> in OpenClaw, <code>$cast login</code> in Codex. Also available as standalone CLI: <code>codecast publish</code>, <code>codecast login</code>, etc.
           </p>
         </div>
 
@@ -416,7 +419,7 @@ export default function Home() {
             </div>
           </div>
           <p className="hp-doc-note">
-            Session files are auto-discovered. Use <code>/cast list</code> or <code>$cast list</code> (Codex) to browse available sessions.
+            Session files are auto-discovered. Use <code>/cast list</code>, <code>/skill cast list</code>, or <code>$cast list</code> to browse available sessions.
           </p>
         </div>
       </section>
