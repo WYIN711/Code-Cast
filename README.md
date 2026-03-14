@@ -12,7 +12,9 @@ GitHub has your code. CodeCast has the conversation that built it. Publish your 
 npm install -g codecast-cli
 ```
 
-Then inside any **Claude Code**, **Codex**, **OpenClaw**, **OpenCode**, or **Gemini CLI** session:
+All slash commands (`/cast`, `/skill cast`, `$cast`) are **automatically registered** on install — no manual setup needed. Works out of the box with Claude Code, Codex, OpenClaw, OpenCode, and Gemini CLI.
+
+Then inside any session:
 
 ```
 # Claude Code
@@ -111,27 +113,7 @@ Works on desktop and mobile.
 | OpenCode | `~/.local/share/opencode/opencode.db` | SQLite |
 | Gemini CLI | `~/.gemini/tmp/<hash>/chats/*.json` | JSON |
 
-### Setting up `/cast` for OpenCode
-
-Copy the slash command file to your project:
-
-```bash
-mkdir -p .opencode/commands
-cp node_modules/codecast-cli/docs/integrations/opencode/cast.md .opencode/commands/cast.md
-```
-
-Or create `.opencode/commands/cast.md` manually — see [`docs/integrations/opencode/cast.md`](docs/integrations/opencode/cast.md).
-
-### Setting up `/cast` for Gemini CLI
-
-Copy the slash command file to your project:
-
-```bash
-mkdir -p .gemini/commands
-cp node_modules/codecast-cli/docs/integrations/gemini-cli/cast.toml .gemini/commands/cast.toml
-```
-
-Or create `.gemini/commands/cast.toml` manually — see [`docs/integrations/gemini-cli/cast.toml`](docs/integrations/gemini-cli/cast.toml).
+Slash commands are auto-installed to `~/.claude/commands/`, `~/.opencode/commands/`, `~/.gemini/commands/`, `~/.agents/skills/`, and `~/.openclaw/skills/` during `npm install`.
 
 ## Development
 

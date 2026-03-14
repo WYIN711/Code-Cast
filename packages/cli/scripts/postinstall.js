@@ -33,3 +33,23 @@ try {
   const openclawSrc = existsSync(srcOpenClaw) ? srcOpenClaw : src;
   copyFileSync(openclawSrc, join(dir, 'SKILL.md'));
 } catch {}
+
+// OpenCode: ~/.opencode/commands/cast.md
+try {
+  const srcOpenCode = join(__dirname, '..', 'skills', 'cast', 'cast.opencode.md');
+  if (existsSync(srcOpenCode)) {
+    const dir = join(homedir(), '.opencode', 'commands');
+    mkdirSync(dir, { recursive: true });
+    copyFileSync(srcOpenCode, join(dir, 'cast.md'));
+  }
+} catch {}
+
+// Gemini CLI: ~/.gemini/commands/cast.toml
+try {
+  const srcGemini = join(__dirname, '..', 'skills', 'cast', 'cast.gemini.toml');
+  if (existsSync(srcGemini)) {
+    const dir = join(homedir(), '.gemini', 'commands');
+    mkdirSync(dir, { recursive: true });
+    copyFileSync(srcGemini, join(dir, 'cast.toml'));
+  }
+} catch {}

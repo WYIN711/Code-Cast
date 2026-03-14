@@ -432,7 +432,7 @@ export default function Home() {
             </div>
           </div>
           <p className="hp-doc-note">
-            Session files are auto-discovered. Use <code>/cast list</code> to browse available sessions. OpenCode and Gemini CLI require a one-time <code>/cast</code> slash command setup — see the <a href="https://github.com/WYIN711/Code-Cast#supported-sources" style={{ color: 'var(--text-2)' }}>README</a> for details.
+            Session files are auto-discovered. All slash commands are automatically registered when you install <code>codecast-cli</code> — no manual setup needed. Use <code>/cast list</code> to browse available sessions.
           </p>
         </div>
       </section>

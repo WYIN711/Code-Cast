@@ -1,0 +1,2 @@
+description = "Publish this session with CodeCast"
+prompt = "Run codecast publish to share this session. Show the resulting URL."
