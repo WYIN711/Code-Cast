@@ -1,5 +1,12 @@
-import Database from 'better-sqlite3';
+import initSqlJs, { type Database } from 'sql.js';
+import { readFileSync } from 'fs';
 import type { ParsedSession, SessionEntry, SessionMetadata } from './types.js';
+
+async function openDb(dbPath: string): Promise<Database> {
+  const SQL = await initSqlJs();
+  const buffer = readFileSync(dbPath);
+  return new SQL.Database(buffer);
+}
 
 /**
  * OpenCode stores sessions in a SQLite database at ~/.local/share/opencode/opencode.db
@@ -63,18 +70,29 @@ export interface OpenCodeSessionInfo {
   version: string;
 }
 
+function queryAll<T>(db: Database, sql: string, params: unknown[] = []): T[] {
+  const stmt = db.prepare(sql);
+  if (params.length) stmt.bind(params);
+  const rows: T[] = [];
+  while (stmt.step()) {
+    rows.push(stmt.getAsObject() as T);
+  }
+  stmt.free();
+  return rows;
+}
+
 /**
  * List all sessions from an OpenCode SQLite database.
  */
-export function listOpenCodeSessions(dbPath: string): OpenCodeSessionInfo[] {
-  const db = new Database(dbPath, { readonly: true });
+export async function listOpenCodeSessions(dbPath: string): Promise<OpenCodeSessionInfo[]> {
+  const db = await openDb(dbPath);
   try {
-    const rows = db.prepare(
+    const rows = queryAll<SessionRow>(db,
       `SELECT id, title, directory, version, time_created, time_updated
        FROM session
        WHERE time_archived IS NULL
        ORDER BY time_updated DESC`
-    ).all() as SessionRow[];
+    );
 
     return rows.map(row => ({
       id: row.id,
@@ -91,32 +109,36 @@ export function listOpenCodeSessions(dbPath: string): OpenCodeSessionInfo[] {
 /**
  * Parse a specific OpenCode session from its SQLite database.
  */
-export function parseOpenCodeSession(dbPath: string, sessionId: string): ParsedSession {
-  const db = new Database(dbPath, { readonly: true });
+export async function parseOpenCodeSession(dbPath: string, sessionId: string): Promise<ParsedSession> {
+  const db = await openDb(dbPath);
   try {
     // Get session metadata
-    const session = db.prepare(
+    const sessions = queryAll<SessionRow>(db,
       `SELECT id, title, directory, version, time_created, time_updated
-       FROM session WHERE id = ?`
-    ).get(sessionId) as SessionRow | undefined;
+       FROM session WHERE id = ?`,
+      [sessionId]
+    );
+    const session = sessions[0];
 
     if (!session) {
       throw new Error(`OpenCode session not found: ${sessionId}`);
     }
 
     // Get all messages for this session, ordered by time
-    const messages = db.prepare(
+    const messages = queryAll<MessageRow>(db,
       `SELECT id, session_id, time_created, data
        FROM message WHERE session_id = ?
-       ORDER BY time_created ASC, id ASC`
-    ).all(sessionId) as MessageRow[];
+       ORDER BY time_created ASC, id ASC`,
+      [sessionId]
+    );
 
     // Get all parts for this session, ordered by message then time
-    const parts = db.prepare(
+    const parts = queryAll<PartRow>(db,
       `SELECT id, message_id, time_created, data
        FROM part WHERE session_id = ?
-       ORDER BY message_id ASC, id ASC`
-    ).all(sessionId) as PartRow[];
+       ORDER BY message_id ASC, id ASC`,
+      [sessionId]
+    );
 
     // Group parts by message_id
     const partsByMessage = new Map<string, PartRow[]>();

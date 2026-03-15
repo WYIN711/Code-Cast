@@ -49,13 +49,13 @@ program
         };
       } else {
         spinner.start('Finding latest session...');
-        sessionInfo = findLatestSessionInfo();
+        sessionInfo = await findLatestSessionInfo();
         spinner.succeed(`Found session: ${sessionInfo.name}`);
       }
 
       // Parse
       spinner.start('Parsing session...');
-      const parsed = parseSession(sessionInfo.path, sessionInfo.openCodeSessionId);
+      const parsed = await parseSession(sessionInfo.path, sessionInfo.openCodeSessionId);
       spinner.succeed(`Parsed ${parsed.entries.length} entries (${parsed.metadata.agent})`);
 
       // Redact
@@ -152,9 +152,9 @@ program
   .description('List recent local sessions')
   .option('-n, --count <n>', 'Number of sessions to show', '10')
   .option('--source <type>', 'Filter by source: claude-code, codex, openclaw, opencode, gemini-cli, all', 'all')
-  .action((options) => {
+  .action(async (options) => {
     const count = parseInt(options.count, 10);
-    const sessions = listSessions(options.source, isNaN(count) || count < 1 ? 10 : count);
+    const sessions = await listSessions(options.source, isNaN(count) || count < 1 ? 10 : count);
     if (sessions.length === 0) {
       console.log(chalk.yellow('No sessions found.'));
       return;
@@ -177,8 +177,8 @@ program
   .description('Parse a session file and output JSON (for debugging)')
   .argument('<file>', 'Path to session file')
   .option('--session-id <id>', 'Session ID (required for OpenCode .db files)')
-  .action((file: string, options) => {
-    const parsed = parseSession(resolve(file), options.sessionId);
+  .action(async (file: string, options) => {
+    const parsed = await parseSession(resolve(file), options.sessionId);
     console.log(JSON.stringify(parsed, null, 2));
   });
 
@@ -355,15 +355,15 @@ function sourceLabel(source: string): string {
   }
 }
 
-function findLatestSessionInfo(): SessionInfo {
-  const sessions = listSessions('all', 1);
+async function findLatestSessionInfo(): Promise<SessionInfo> {
+  const sessions = await listSessions('all', 1);
   if (sessions.length === 0) {
     throw new Error('No sessions found. Provide a file path explicitly.');
   }
   return sessions[0];
 }
 
-function listSessions(source: string, limit: number): SessionInfo[] {
+async function listSessions(source: string, limit: number): Promise<SessionInfo[]> {
   const results: SessionInfo[] = [];
 
   // Claude Code sessions
@@ -456,7 +456,7 @@ function listSessions(source: string, limit: number): SessionInfo[] {
     const openCodeDbPath = join(homedir(), '.local', 'share', 'opencode', 'opencode.db');
     if (existsSync(openCodeDbPath)) {
       try {
-        const sessions = listOpenCodeSessions(openCodeDbPath);
+        const sessions = await listOpenCodeSessions(openCodeDbPath);
         for (const s of sessions) {
           results.push({
             name: s.title,

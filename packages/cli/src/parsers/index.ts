@@ -17,7 +17,7 @@ type Source = 'claude-code' | 'codex' | 'openclaw' | 'opencode' | 'gemini-cli' |
  * For OpenCode sessions, pass `openCodeSessionId` to specify which session
  * to extract from the SQLite database.
  */
-export function parseSession(filePath: string, openCodeSessionId?: string): ParsedSession {
+export async function parseSession(filePath: string, openCodeSessionId?: string): Promise<ParsedSession> {
   if (!existsSync(filePath)) {
     throw new Error(`Session file not found: ${filePath}`);
   }
@@ -35,7 +35,7 @@ export function parseSession(filePath: string, openCodeSessionId?: string): Pars
       if (!openCodeSessionId) {
         throw new Error('OpenCode sessions require a session ID. Use `codecast list --source opencode` to find session IDs.');
       }
-      return parseOpenCodeSession(filePath, openCodeSessionId);
+      return await parseOpenCodeSession(filePath, openCodeSessionId);
     case 'gemini-cli':
       return parseGeminiCliSession(filePath);
     default:
