@@ -8,7 +8,7 @@ import { addToHistory, getHistory, findInHistory, removeFromHistory } from './hi
 import { nanoid } from 'nanoid';
 import chalk from 'chalk';
 import ora from 'ora';
-import { readdirSync, readFileSync, statSync, existsSync } from 'fs';
+import { readdirSync, readFileSync, statSync, existsSync, openSync, fstatSync, readSync, closeSync } from 'fs';
 import { join, resolve, dirname } from 'path';
 import { homedir } from 'os';
 import { createServer } from 'http';
@@ -365,12 +365,39 @@ async function findLatestSessionInfo(): Promise<SessionInfo> {
   // Claude Code encodes project paths as: /Users/foo/bar → -Users-foo-bar
   const cwd = process.cwd();
   const encodedCwd = '-' + cwd.split('/').filter(Boolean).join('-');
-  const cwdSession = sessions.find(s =>
+  const projectSessions = sessions.filter(s =>
     s.source === 'claude-code' && s.path.includes(`/${encodedCwd}/`)
   );
-  if (cwdSession) return cwdSession;
+
+  if (projectSessions.length === 1) return projectSessions[0];
+
+  if (projectSessions.length > 1) {
+    // Multiple sessions in same project — find the one that invoked codecast.
+    // When /cast runs, Claude Code has already appended the tool_use entry
+    // containing "codecast" to the current session's JSONL file.
+    for (const s of projectSessions) {
+      if (tailContains(s.path, 'codecast')) return s;
+    }
+    // Fallback to most recent in project
+    return projectSessions[0];
+  }
 
   return sessions[0];
+}
+
+/** Read the last N bytes of a file and check if it contains a substring. */
+function tailContains(filePath: string, needle: string, bytes = 8192): boolean {
+  try {
+    const fd = openSync(filePath, 'r');
+    const stat = fstatSync(fd);
+    const tailSize = Math.min(bytes, stat.size);
+    const buf = Buffer.alloc(tailSize);
+    readSync(fd, buf, 0, tailSize, stat.size - tailSize);
+    closeSync(fd);
+    return buf.toString('utf-8').includes(needle);
+  } catch {
+    return false;
+  }
 }
 
 async function listSessions(source: string, limit: number): Promise<SessionInfo[]> {
