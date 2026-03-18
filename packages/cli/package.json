@@ -1,6 +1,6 @@
 {
   "name": "codecast-cli",
-  "version": "0.3.3",
+  "version": "0.3.4",
   "description": "Share AI coding sessions as beautiful web pages. Supports Claude Code, Codex, OpenClaw, OpenCode, and Gemini CLI.",
   "type": "module",
   "bin": {

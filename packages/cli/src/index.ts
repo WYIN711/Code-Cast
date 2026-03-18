@@ -356,10 +356,20 @@ function sourceLabel(source: string): string {
 }
 
 async function findLatestSessionInfo(): Promise<SessionInfo> {
-  const sessions = await listSessions('all', 1);
+  const sessions = await listSessions('all', 100);
   if (sessions.length === 0) {
     throw new Error('No sessions found. Provide a file path explicitly.');
   }
+
+  // For Claude Code: prefer sessions from the current working directory's project
+  // Claude Code encodes project paths as: /Users/foo/bar → -Users-foo-bar
+  const cwd = process.cwd();
+  const encodedCwd = '-' + cwd.split('/').filter(Boolean).join('-');
+  const cwdSession = sessions.find(s =>
+    s.source === 'claude-code' && s.path.includes(`/${encodedCwd}/`)
+  );
+  if (cwdSession) return cwdSession;
+
   return sessions[0];
 }
 
